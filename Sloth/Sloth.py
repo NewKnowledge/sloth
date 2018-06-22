@@ -51,9 +51,9 @@ class Sloth:
 
         return SimilarityMatrix
 
-    def ClusterSimilarityMatrix(self,SimilarityMatrix):
+    def ClusterSimilarityMatrix(self,SimilarityMatrix,eps,min_samples):
         # perform DBSCAN clustering
-        db = DBSCAN(eps=20,min_samples=2,metric='precomputed')
+        db = DBSCAN(eps=eps,min_samples=min_samples,metric='precomputed')
         print("DBSCAN settings:")
         print(db)
         db.fit(SimilarityMatrix)
