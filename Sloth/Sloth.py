@@ -10,7 +10,7 @@ from collections import Counter
 
 class Sloth:
     def __init__(self):
-        # nothing to do
+        pass # nothing to do
 
     def VisuallyCompareTwoSeries(self,series,i1,i2):
         fig = plt.figure()
