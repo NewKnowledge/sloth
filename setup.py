@@ -9,7 +9,6 @@ setup(name='Sloth',
         'pandas >= 0.19.2',
         'scipy >= 0.19.0',
         'numpy',
-        'matplotlib',
-        'collections'],
+        'matplotlib'],
     include_package_data=True,
 )
