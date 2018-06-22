@@ -18,7 +18,7 @@ class Sloth:
         ax1 = fig.add_subplot(211)
         ax1.plot(np.arange(series.shape[1]-1), series.values[i1,1:])
         ax1.set_xlabel("time")
-        ax1.set_ylabel(str(i1)
+        ax1.set_ylabel(str(i1))
         ax2 = fig.add_subplot(212)
         ax2.plot(np.arange(series.shape[1]-1), series.values[i2,1:])
         ax2.set_xlabel("time")
