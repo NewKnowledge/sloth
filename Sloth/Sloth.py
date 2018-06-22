@@ -8,7 +8,7 @@ from scipy.spatial.distance import euclidean
 from fastdtw import fastdtw
 from collections import Counter
 
-class Simon:
+class Sloth:
     def __init__(self):
         # nothing to do
 
