@@ -2,9 +2,8 @@ import numpy
 import matplotlib
 #matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+from Sloth import Sloth
 
-from tslearn.clustering import GlobalAlignmentKernelKMeans
-from tslearn.metrics import sigma_gak, cdist_gak
 from tslearn.datasets import CachedDatasets
 from tslearn.preprocessing import TimeSeriesScalerMeanVariance
 
@@ -19,8 +18,8 @@ sz = X_train.shape[1]
 print("DEBUG::X_train.shape is")
 print(X_train.shape)
 
-gak_km = GlobalAlignmentKernelKMeans(n_clusters=3, sigma=sigma_gak(X_train), n_init=20, verbose=True, random_state=seed)
-y_pred = gak_km.fit_predict(X_train)
+Sloth = Sloth()
+y_pred = Sloth.ClusterSeriesKMeans(X_train,3)
 
 plt.figure()
 for yi in range(3):

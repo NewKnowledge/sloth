@@ -10,6 +10,11 @@ from scipy.spatial.distance import euclidean
 from fastdtw import fastdtw
 from collections import Counter
 
+from tslearn.clustering import GlobalAlignmentKernelKMeans
+from tslearn.metrics import sigma_gak, cdist_gak
+
+from tslearn.neighbors import KNeighborsTimeSeriesClassifier
+
 class Sloth:
     def __init__(self):
         pass # nothing to do
@@ -87,7 +92,23 @@ class Sloth:
         SimilarityMatrix = np.load("SimilarityMatrix.npy")
         return SimilarityMatrix
 
+    def ClusterSeriesKMeans(self,series,n_clusters):
+        seed = 0
+        np.random.seed(seed)
+        gak_km = GlobalAlignmentKernelKMeans(n_clusters=n_clusters, sigma=sigma_gak(series), n_init=20, verbose=True, random_state=seed)
+        y_pred = gak_km.fit_predict(series)
+
+        return y_pred
+
+    def ClassifySeriesKNN(self,series,series_train,y_train,n_neighbors):
+        knn_clf = KNeighborsTimeSeriesClassifier(n_neighbors=n_neighbors, metric="dtw")
+        knn_clf.fit(series_train, y_train)
+        predicted_labels = knn_clf.predict(series)
+
+        return predicted_labels
+
+
 
 # try  k-medoids clustering?
-# try hierarchical clustering?
+# try hierarchical clustering - hdbscan
 # try mds/PCA?
