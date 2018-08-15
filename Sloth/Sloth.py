@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib
-matplotlib.use('Agg')
+#matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import pickle
 from scipy import sparse
@@ -46,10 +46,10 @@ class Sloth:
             if j%10==0:
                 print("Processing matrix row for time series "+str(j))
             try:
-                row_series = series.values[j,1:]
+                row_series = series[j,:]
                 for i in np.arange(nrows):
                     try:
-                        column_series = series.values[i,1:]
+                        column_series = series[i,:]
                         distance,path = fastdtw(row_series,column_series,dist=euclidean)
                         SimilarityMatrix[j,i] = distance
                     except Exception as e:
@@ -58,8 +58,8 @@ class Sloth:
             except:
                 pass
         print("DONE!")
-        print("Similarity Matrix:")
-        print(SimilarityMatrix)
+        #print("Similarity Matrix:")
+        #print(SimilarityMatrix)
 
         return SimilarityMatrix
 
@@ -112,20 +112,20 @@ class Sloth:
 
         return predicted_labels
     
-    def DecomposeSeriesSeasonal(self,series):
-        #data = pd.DataFrame(series,index = np.arange(series.shape[0]),columns=["Series"])
-        return seasonal_decompose(series, model="multiplicative")
+    def DecomposeSeriesSeasonal(self,series_time_index,series):
+        data = pd.DataFrame(series,index = series_time_index,columns=["Series"])
+        return seasonal_decompose(data, model="multiplicative")
 
-    def PredictSeriesARIMA(self,series,n_periods,seasonal):
-        #data = pd.DataFrame(series,index = np.arange(series.shape[1]),columns=["Series"])
-        stepwise_model = auto_arima(series, start_p=1, start_q=1,
+    def PredictSeriesARIMA(self,series_time_index,series,n_periods,seasonal):
+        data = pd.DataFrame(series,index=series_time_index, columns=["Series"])
+        stepwise_model = auto_arima(data, start_p=1, start_q=1,
                            max_p=3, max_q=3, m=12,
                            start_P=0, seasonal=seasonal,
                            d=1, D=1, trace=True,
                            error_action='ignore',  
                            suppress_warnings=True, 
                            stepwise=True)
-        stepwise_model.fit(series)
+        stepwise_model.fit(data)
         future_forecast = stepwise_model.predict(n_periods=n_periods)
 
         return future_forecast

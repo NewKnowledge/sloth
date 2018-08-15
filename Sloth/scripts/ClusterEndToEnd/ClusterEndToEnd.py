@@ -3,8 +3,10 @@ import numpy as np
 from Sloth import Sloth
 
 import matplotlib
+#matplotlib.use('TkAgg')
 #matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+
 
 from tslearn.preprocessing import TimeSeriesScalerMeanVariance
 
@@ -19,25 +21,17 @@ nrows,ncols = series.shape
 
 # scaling can sometimes improve performance
 X_train = series.values
-#X_train = X_train.reshape((X_train.shape[0],X_train.shape[1],1))
 X_train = TimeSeriesScalerMeanVariance().fit_transform(X_train)
-series = pd.DataFrame(data=X_train.reshape((X_train.shape[0],X_train.shape[1])))
+X_train = X_train.reshape((X_train.shape[0],X_train.shape[1]))
 
 LOAD = True # Flag for loading similarity matrix from file if it has been computed before
 if(LOAD):
     SimilarityMatrix = Sloth.LoadSimilarityMatrix()    
 else:
-    SimilarityMatrix = Sloth.GenerateSimilarityMatrix(series)
+    SimilarityMatrix = Sloth.GenerateSimilarityMatrix(X_train[:,1:])
     Sloth.SaveSimilarityMatrix(SimilarityMatrix)
 
 nclusters, labels, cnt = Sloth.ClusterSimilarityMatrix(SimilarityMatrix,eps,min_samples)
-
-# compare two time series visually
-#chosen_cluster = 0
-#print("The indices of the chosen_cluster are:")
-#chosen_cluster_indices = np.arange(len(list(labels)))[labels==chosen_cluster]
-#print(chosen_cluster_indices)
-#Sloth.VisuallyCompareTwoSeries(series,chosen_cluster_indices[0],chosen_cluster_indices[1])
 
 series_np = series.values
 

@@ -45,14 +45,14 @@ print("1. Nearest neighbour search")
 print("Computed nearest neighbor indices (wrt DTW)\n", ind)
 print("First nearest neighbor class:", y_test[ind[:, 0]])
 
-print("ind (of nearest neighbours):")
+print("DEBUG::indices (of nearest neighbours):")
 print(ind)
 print(ind.shape)
 
 # Nearest neighbor classification
 Sloth = Sloth()
 predicted_labels = Sloth.ClassifySeriesKNN(X_test,X_train,y_train,3)
-print("\n2. Nearest neighbor classification using DTW")
+print("\n2. Nearest neighbor classification using Sloth (DTW)")
 print("Correct classification rate:", accuracy_score(y_test, predicted_labels))
 
 print("DEBUG::the predicted_labels are:")
