@@ -15,6 +15,11 @@ from tslearn.metrics import sigma_gak, cdist_gak
 
 from tslearn.neighbors import KNeighborsTimeSeriesClassifier
 
+from statsmodels.tsa.seasonal import seasonal_decompose
+
+from pyramid.arima import auto_arima
+
+
 class Sloth:
     def __init__(self):
         pass # nothing to do
@@ -106,9 +111,24 @@ class Sloth:
         predicted_labels = knn_clf.predict(series)
 
         return predicted_labels
+    
+    def DecomposeSeriesSeasonal(self,series):
+        #data = pd.DataFrame(series,index = np.arange(series.shape[0]),columns=["Series"])
+        return seasonal_decompose(series, model="multiplicative")
+
+    def PredictSeriesARIMA(self,series,n_periods,seasonal):
+        #data = pd.DataFrame(series,index = np.arange(series.shape[1]),columns=["Series"])
+        stepwise_model = auto_arima(series, start_p=1, start_q=1,
+                           max_p=3, max_q=3, m=12,
+                           start_P=0, seasonal=seasonal,
+                           d=1, D=1, trace=True,
+                           error_action='ignore',  
+                           suppress_warnings=True, 
+                           stepwise=True)
+        stepwise_model.fit(series)
+        future_forecast = stepwise_model.predict(n_periods=n_periods)
+
+        return future_forecast
 
 
-
-# try  k-medoids clustering?
-# try hierarchical clustering - hdbscan
-# try mds/PCA?
+# try hierarchical clustering - hdbscan?
