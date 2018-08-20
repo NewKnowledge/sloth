@@ -24,7 +24,7 @@ X_train = X_train[:50]
 
 sz = X_train.shape[1]
 
-series = pd.DataFrame(data=X_train.reshape((X_train.shape[0],X_train.shape[1])))
+X_train = X_train.reshape((X_train.shape[0],X_train.shape[1]))
 
 Sloth = Sloth()
 eps = 20
@@ -33,7 +33,7 @@ LOAD = False # Flag for loading similarity matrix from file if it has been compu
 if(LOAD):
     SimilarityMatrix = Sloth.LoadSimilarityMatrix()    
 else:
-    SimilarityMatrix = Sloth.GenerateSimilarityMatrix(series)
+    SimilarityMatrix = Sloth.GenerateSimilarityMatrix(X_train)
     Sloth.SaveSimilarityMatrix(SimilarityMatrix)
 nclusters, labels, cnt = Sloth.ClusterSimilarityMatrix(SimilarityMatrix,eps,min_samples)
 

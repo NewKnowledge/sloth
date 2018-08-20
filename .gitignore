@@ -104,6 +104,4 @@ venv.bak/
 .mypy_cache/
 
 # custom
-backup
-data
-Scripts/SimilarityMatrix.npy
+Sloth/scripts/SocialDataExpts
