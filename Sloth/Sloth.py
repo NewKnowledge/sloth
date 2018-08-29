@@ -66,21 +66,19 @@ class Sloth:
     def ClusterSimilarityMatrix(self,SimilarityMatrix,eps,min_samples):
         # perform DBSCAN clustering
         db = DBSCAN(eps=eps,min_samples=min_samples,metric='precomputed')
-        print("DBSCAN settings:")
-        print(db)
+        #print("DBSCAN settings:")
+        #print(db)
         db.fit(SimilarityMatrix)
         labels = db.labels_
         nclusters = len(set(labels))-(1 if -1 in labels else 0)
-        print("Number of clusters:",nclusters)
-
+        #print("Number of clusters:",nclusters)
         cnt = Counter()
         for label in list(labels):
             cnt[label] += 1
-
-        print("The cluster frequencies are:")
-        print(cnt)
-        print("The labels are:")
-        print(labels)
+        #print("The cluster frequencies are:")
+        #print(cnt)
+        #print("The labels are:")
+        #print(labels)
 
         return nclusters, labels, cnt
 
