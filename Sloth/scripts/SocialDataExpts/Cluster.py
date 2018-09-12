@@ -1,14 +1,14 @@
 import pandas as pd
 import numpy as np
 from Sloth import Sloth
-
 import matplotlib
 #matplotlib.use('TkAgg')
 #matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-
-
 from tslearn.preprocessing import TimeSeriesScalerMeanVariance
+from collections import Counter
+import hdbscan
+
 
 Sloth = Sloth()
 datapath = 'post_frequency_8.09_8.15.csv'
@@ -50,21 +50,7 @@ print("The cluster frequencies are:")
 print(cnt)
         
 ## try hierarchical clustering
-import hdbscan
-clusterer = hdbscan.HDBSCAN(min_cluster_size=2,metric="precomputed",min_samples=min_samples)
-labels = clusterer.fit_predict(SimilarityMatrix)
-nclusters = len(set(labels))-(1 if -1 in labels else 0)
-from collections import Counter
-cnt = Counter()
-for label in list(labels):
-    cnt[label] += 1
-
-clusterer.condensed_tree_.plot()
-plt.figure()
-clusterer.single_linkage_tree_.plot(cmap='viridis',colorbar=True)
-
-
-
+nclusters, labels, cnt = Sloth.HClusterSimilarityMatrix(SimilarityMatrix,min_samples,PLOT=True)
 
 print("The hcluster frequencies are:")
 print(cnt)

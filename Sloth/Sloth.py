@@ -1,10 +1,11 @@
 import numpy as np
 import pandas as pd
-import matplotlib
-#matplotlib.use('Agg')
+#import matplotlib
+#matplotlib.use('Agg') # uncomment for docker images
 import matplotlib.pyplot as plt
 import pickle
 from scipy import sparse
+import hdbscan
 from sklearn.cluster import DBSCAN
 from scipy.spatial.distance import euclidean
 from fastdtw import fastdtw
@@ -12,13 +13,10 @@ from collections import Counter
 
 from tslearn.clustering import GlobalAlignmentKernelKMeans
 from tslearn.metrics import sigma_gak, cdist_gak
-
 from tslearn.neighbors import KNeighborsTimeSeriesClassifier
 
 from statsmodels.tsa.seasonal import seasonal_decompose
-
 from pyramid.arima import auto_arima
-
 
 class Sloth:
     def __init__(self):
@@ -79,6 +77,22 @@ class Sloth:
         #print(cnt)
         #print("The labels are:")
         #print(labels)
+
+        return nclusters, labels, cnt
+
+    def HClusterSimilarityMatrix(self,SimilarityMatrix,min_samples,PLOT=False):
+        # perform DBSCAN clustering
+        hdb = hdbscan.HDBSCAN(min_cluster_size=min_samples,min_samples=min_samples,metric='precomputed')
+        labels = hdb.fit_predict(SimilarityMatrix)
+        nclusters = len(set(labels))-(1 if -1 in labels else 0)
+        cnt = Counter()
+        for label in list(labels):
+            cnt[label] += 1
+        if(PLOT):
+            plt.figure()
+            hdb.condensed_tree_.plot()
+            plt.figure()
+            hdb.single_linkage_tree_.plot(cmap='viridis',colorbar=True)
 
         return nclusters, labels, cnt
 
