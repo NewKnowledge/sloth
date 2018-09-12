@@ -7,7 +7,6 @@ import matplotlib
 import matplotlib.pyplot as plt
 from tslearn.preprocessing import TimeSeriesScalerMeanVariance
 from collections import Counter
-import hdbscan
 
 
 Sloth = Sloth()
@@ -17,9 +16,8 @@ series = pd.read_csv(datapath,dtype='str',header=0)
 #print("DEBUG::post frequency data:")
 #print(series)
 
-# scaling can sometimes improve performance
 X_train = series.values[:,1:]
-
+# scaling can sometimes improve performance
 #X_train = TimeSeriesScalerMeanVariance().fit_transform(X_train)
 
 n_samples = 100
