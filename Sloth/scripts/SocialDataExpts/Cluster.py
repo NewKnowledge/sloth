@@ -48,12 +48,12 @@ print("The cluster frequencies are:")
 print(cnt)
         
 ## try hierarchical clustering
-nclusters, labels, cnt = Sloth.HClusterSimilarityMatrix(SimilarityMatrix,min_samples,PLOT=True)
+nclusters, labels, cnt = Sloth.HClusterSimilarityMatrix(SimilarityMatrix,min_samples,PLOT=False)
 
 print("The hcluster frequencies are:")
 print(cnt)
 
-## this is the second clustering method, using tslearn kmeans
+## this is another clustering method, using tslearn kmeans
 nclusters = 10
 labels = Sloth.ClusterSeriesKMeans(X_train,nclusters)
 nclusters = len(set(labels))-(1 if -1 in labels else 0)
@@ -80,18 +80,15 @@ for yi in cnt_nontrivial.keys():
     idx = idx+1
 
 clust = 4
-print("DEBUG::anomalous series:")
-print(series_np[labels==clust])
-print(series.values[:n_samples,0][labels==clust])
 
 print("DEBUG::AniyaHadlee cluster:")
 print(labels[series.values[:n_samples,0]=='AniyaHadlee'])
 print("DEBUG::BarackDonovan cluster:")
 print(labels[series.values[:n_samples,0]=='BarackDonovan'])
 
-print("DEBUG::cluster anomaly series:")
-print(series_np[labels==clust])
-print(series.values[:n_samples,0][labels==clust])
+print("DEBUG::cluster=%d series are:"%clust)
+print(series_np[labels==clust]) # series
+print(series.values[:n_samples,0][labels==clust]) # usernames
 
 plt.tight_layout()
 plt.show()

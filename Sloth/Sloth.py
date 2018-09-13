@@ -56,27 +56,18 @@ class Sloth:
             except:
                 pass
         print("DONE!")
-        #print("Similarity Matrix:")
-        #print(SimilarityMatrix)
 
         return SimilarityMatrix
 
     def ClusterSimilarityMatrix(self,SimilarityMatrix,eps,min_samples):
         # perform DBSCAN clustering
         db = DBSCAN(eps=eps,min_samples=min_samples,metric='precomputed')
-        #print("DBSCAN settings:")
-        #print(db)
         db.fit(SimilarityMatrix)
         labels = db.labels_
         nclusters = len(set(labels))-(1 if -1 in labels else 0)
-        #print("Number of clusters:",nclusters)
         cnt = Counter()
         for label in list(labels):
             cnt[label] += 1
-        #print("The cluster frequencies are:")
-        #print(cnt)
-        #print("The labels are:")
-        #print(labels)
 
         return nclusters, labels, cnt
 
@@ -141,6 +132,3 @@ class Sloth:
         future_forecast = stepwise_model.predict(n_periods=n_periods)
 
         return future_forecast
-
-
-# try hierarchical clustering - hdbscan?
