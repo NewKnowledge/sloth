@@ -87,17 +87,17 @@ class Sloth:
 
         return nclusters, labels, cnt
 
-    def SaveSimilarityMatrix(self,SimilarityMatrix):
-        np.save("SimilarityMatrix",SimilarityMatrix)
+    def SaveSimilarityMatrix(self,SimilarityMatrix,filename):
+        np.save(filename,SimilarityMatrix)
 
-    def SaveSparseSimilarityMatrix(self,SimilarityMatrix):
+    def SaveSparseSimilarityMatrix(self,SimilarityMatrix,filename):
         # sometimes the following may make sense - create a sparse representation
         SimilarityMatrixSparse = sparse.csr_matrix(SimilarityMatrix)
-        with open("SimilarityMatrixSparse.dat",'wb') as outfile:
+        with open(filename,'wb') as outfile:
             pickle.dump(SimilarityMatrixSparse,outfile,pickle.HIGHEST_PROTOCOL)
 
-    def LoadSimilarityMatrix(self):
-        SimilarityMatrix = np.load("SimilarityMatrix.npy")
+    def LoadSimilarityMatrix(self,filename):
+        SimilarityMatrix = np.load(filename+'.npy')
         return SimilarityMatrix
 
     def ClusterSeriesKMeans(self,series,n_clusters):

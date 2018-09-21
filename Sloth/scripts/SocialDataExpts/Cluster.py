@@ -37,10 +37,10 @@ eps = 90
 min_samples = 2
 LOAD = True # Flag for loading similarity matrix from file if it has been computed before
 if(LOAD):
-    SimilarityMatrix = Sloth.LoadSimilarityMatrix()    
+    SimilarityMatrix = Sloth.LoadSimilarityMatrix('SimilarityMatrix')    
 else:
     SimilarityMatrix = Sloth.GenerateSimilarityMatrix(X_train[:,1:])
-    Sloth.SaveSimilarityMatrix(SimilarityMatrix)
+    Sloth.SaveSimilarityMatrix(SimilarityMatrix,'SimilarityMatrix')
 
 nclusters, labels, cnt = Sloth.ClusterSimilarityMatrix(SimilarityMatrix,eps,min_samples)
 
@@ -65,10 +65,9 @@ for label in list(labels):
 print("The k-means frequencies are:")
 print(cnt)
 
+# plot the latest clustering result
 series_np = X_train
-
 cnt_nontrivial = {x:cnt[x] for x in cnt if cnt[x]>1 and x!=-1}
-
 plt.figure()
 idx = 0
 for yi in cnt_nontrivial.keys():
@@ -79,7 +78,7 @@ for yi in cnt_nontrivial.keys():
     plt.title("Cluster %d: %d series" %(yi,cnt[yi]))
     idx = idx+1
 
-clust = 4
+clust = 9
 
 print("DEBUG::AniyaHadlee cluster:")
 print(labels[series.values[:n_samples,0]=='AniyaHadlee'])
