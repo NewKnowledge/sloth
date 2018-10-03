@@ -6,10 +6,24 @@ from tslearn.datasets import CachedDatasets
 from tslearn.preprocessing import TimeSeriesScalerMinMax
 from tslearn.shapelets import ShapeletModel, grabocka_params_to_shapelet_size_dict
 
+import pandas as pd
+
 numpy.random.seed(0)
-X_train, y_train, X_test, y_test = CachedDatasets().load_dataset("Trace")
+
+#X_train, y_train, X_test, y_test = CachedDatasets().load_dataset("Trace")
+
+datapath = 'post_frequency_garret_0924.csv'
+series = pd.read_csv(datapath,header=0)
+
+X_train = series.values[:,1:].T
+headers = list(series)[1:]
+
+X_train = numpy.concatenate((X_train,numpy.random.rand(6,X_train.shape[1])),axis=0)
+
 X_train = TimeSeriesScalerMinMax().fit_transform(X_train)
-X_test = TimeSeriesScalerMinMax().fit_transform(X_test)
+y_train = numpy.array([1,1,1,1,1,1,0,0,0,0,0,0])
+
+#X_test = TimeSeriesScalerMinMax().fit_transform(X_test)
 
 shapelet_sizes = grabocka_params_to_shapelet_size_dict(n_ts=X_train.shape[0],
                                                        ts_sz=X_train.shape[1],
@@ -23,6 +37,8 @@ shp_clf = ShapeletModel(n_shapelets_per_size=shapelet_sizes,
                         max_iter=50,
                         verbose_level=0)
 shp_clf.fit(X_train, y_train)
+
+X_test = X_train
 predicted_locations = shp_clf.locate(X_test)
 
 test_ts_id = 0

@@ -11,7 +11,7 @@ from collections import Counter
 
 Sloth = Sloth()
 datapath = 'post_frequency_8.09_8.15.csv'
-series = pd.read_csv(datapath,dtype='str',header=0)
+series = pd.read_csv(datapath,dtype=str,header=0)
 
 #print("DEBUG::post frequency data:")
 #print(series)
@@ -48,22 +48,22 @@ print("The cluster frequencies are:")
 print(cnt)
         
 ## try hierarchical clustering
-nclusters, labels, cnt = Sloth.HClusterSimilarityMatrix(SimilarityMatrix,min_samples,PLOT=False)
+# nclusters, labels, cnt = Sloth.HClusterSimilarityMatrix(SimilarityMatrix,min_samples,PLOT=False)
 
-print("The hcluster frequencies are:")
-print(cnt)
+# print("The hcluster frequencies are:")
+# print(cnt)
 
 ## this is another clustering method, using tslearn kmeans
-nclusters = 10
-labels = Sloth.ClusterSeriesKMeans(X_train,nclusters)
-nclusters = len(set(labels))-(1 if -1 in labels else 0)
-from collections import Counter
-cnt = Counter()
-for label in list(labels):
-    cnt[label] += 1
+# nclusters = 10
+# labels = Sloth.ClusterSeriesKMeans(X_train,nclusters)
+# nclusters = len(set(labels))-(1 if -1 in labels else 0)
+# from collections import Counter
+# cnt = Counter()
+# for label in list(labels):
+#     cnt[label] += 1
 
-print("The k-means frequencies are:")
-print(cnt)
+# print("The k-means frequencies are:")
+# print(cnt)
 
 # plot the latest clustering result
 series_np = X_train

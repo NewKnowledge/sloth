@@ -9,8 +9,9 @@ from collections import Counter
 
 
 Sloth = Sloth()
-datapath = 'post-freq-counts_craig_09172018.csv'
-series = pd.read_csv(datapath,dtype='str',header=0)
+#datapath = 'post-freq-counts_craig_09172018.csv'
+datapath = 'post_frequency_garret_0924.csv'
+series = pd.read_csv(datapath,header=0)
 
 X_train = series.values[:,1:].T
 headers = list(series)[1:]
@@ -23,8 +24,8 @@ else:
 X_train = X_train.astype(np.float)
 
 # scaling can sometimes improve performance
-#X_train = TimeSeriesScalerMeanVariance().fit_transform(X_train)
-#X_train = X_train.reshape((X_train.shape[0],X_train.shape[1]))
+X_train = TimeSeriesScalerMeanVariance().fit_transform(X_train)
+X_train = X_train.reshape((X_train.shape[0],X_train.shape[1]))
 
 nrows,ncols = X_train.shape
 
@@ -42,7 +43,7 @@ else:
     SimilarityMatrix = Sloth.GenerateSimilarityMatrix(X_train)
     Sloth.SaveSimilarityMatrix(SimilarityMatrix,'SimilarityMatrix_alt')
 
-HIERARCHICAL = True # hierarchical dbscan?
+HIERARCHICAL = False # hierarchical dbscan?
 
 if(HIERARCHICAL):
     ## try hierarchical clustering
@@ -78,7 +79,7 @@ for yi in cnt_nontrivial.keys():
     idx = idx+1
 
 # print details about a specific cluster to screen
-clust = 2
+clust = 0
 print("DEBUG::cluster=%d series are:"%clust)
 print(series_np[labels==clust]) # series
 print(np.array(headers)[labels==clust]) # usernames
