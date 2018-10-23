@@ -119,9 +119,9 @@ class Sloth:
         data = pd.DataFrame(series,index = series_time_index,columns=["Series"])
         return seasonal_decompose(data, model="multiplicative")
 
-    def PredictSeriesARIMA(self,series_time_index,series,n_periods,seasonal):
+    def PredictSeriesARIMA(self,data,n_periods,seasonal):
         # change from series / index to data frame
-        data = pd.DataFrame(series,index=series_time_index, columns=["Series"])
+        #data = pd.DataFrame(series,index=series_time_index, columns=["Series"])
         stepwise_model = auto_arima(data, start_p=1, start_q=1,
                            max_p=3, max_q=3, m=12,
                            start_P=0, seasonal=seasonal,
