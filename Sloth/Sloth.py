@@ -124,7 +124,7 @@ class Sloth:
                            max_p=3, max_q=3, m=12,
                            start_P=0, seasonal=seasonal,
                            d=1, D=1, trace=True,
-                           error_action='ignore',  
+                       values    error_action='ignore',  
                            suppress_warnings=True, 
                            stepwise=True)
         stepwise_model.fit(data)
