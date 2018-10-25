@@ -26,10 +26,9 @@ plt.show()
 train = data.loc['1985-01-01':'2016-12-01']
 test = data.loc['2017-01-01':]
 
-future_forecast = Sloth.PredictSeriesARIMA(train.index,train.values,18,True)
+future_forecast = Sloth.PredictSeriesARIMA(train,18,True)
 
 print("DEBUG::Future forecast:")
-print(future_forecast)
 
 future_forecast = pd.DataFrame(future_forecast,index = test.index,columns=["Prediction"])
 
