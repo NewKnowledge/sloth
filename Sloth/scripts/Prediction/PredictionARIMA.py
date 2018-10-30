@@ -2,6 +2,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from statsmodels.tsa.seasonal import seasonal_decompose
 
+from pyramid.arima import auto_arima
+
 from Sloth import Sloth
 
 #data =pd.read_csv("Electronic_Production.csv",index_col=0)
@@ -40,7 +42,23 @@ plt.show()
 train = data.loc['2010-01-01':'2014-10-31']
 test = data.loc['2014-11-01':]
 
-future_forecast = Sloth.PredictSeriesARIMA(train,61,False)
+print("DEBUG:the size of test is:")
+print(test.shape)
+
+#future_forecast = Sloth.PredictSeriesARIMA(train,test.shape[0],False)
+
+data = train
+n_periods=test.shape[0]
+seasonal=True
+stepwise_model = auto_arima(data, start_p=2, start_q=2,
+                           max_p=5, max_q=5, m=12,
+                           start_P=0, seasonal=seasonal,
+                           d=None, D=1, trace=True,
+                           error_action='ignore',  
+                           suppress_warnings=True, 
+                           stepwise=True)
+stepwise_model.fit(data)
+future_forecast = stepwise_model.predict(n_periods=n_periods)
 
 print("DEBUG::Future forecast:")
 print(future_forecast)
