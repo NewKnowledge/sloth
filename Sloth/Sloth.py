@@ -127,16 +127,27 @@ class Sloth:
         if not frequency:
             return seasonal_decompose(data, model=model)
         else:
-            return seasonal_decompose(data, model=model, freq=frequency)
+            return seasonal_decompose(data, model=model, freq=frequency[0])
 
-    def PredictSeriesARIMA(self, data, n_periods, seasonal, seasonal_differencing):
-        stepwise_model = auto_arima(data, start_p=1, start_q=1,
-                           max_p=3, max_q=3, m=seasonal_differencing,
-                           start_P=0, seasonal=seasonal,
-                           d=1, D=1, trace=True,
-                           error_action='ignore',  
-                           suppress_warnings=True, 
-                           stepwise=True)
+    def PredictSeriesARIMA(self, data, n_periods, seasonal, *seasonal_differencing):
+        # default: annual data
+        if not seasonal_differencing:
+            stepwise_model = auto_arima(data, start_p=1, start_q=1,
+                            max_p=3, max_q=3, m=1
+                            start_P=0, seasonal=seasonal,
+                            d=1, D=1, trace=True,
+                            error_action='ignore',  
+                            suppress_warnings=True, 
+                            stepwise=True)
+        # specified seasonal differencing parameter
+        else:
+            stepwise_model = auto_arima(data, start_p=1, start_q=1,
+                            max_p=3, max_q=3, m=seasonal_differencing[0]
+                            start_P=0, seasonal=seasonal,
+                            d=1, D=1, trace=True,
+                            error_action='ignore',  
+                            suppress_warnings=True, 
+                            stepwise=True)
         stepwise_model.fit(data)
         future_forecast = stepwise_model.predict(n_periods=n_periods)
 
