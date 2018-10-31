@@ -14,6 +14,7 @@ from collections import Counter
 from tslearn.clustering import GlobalAlignmentKernelKMeans
 from tslearn.metrics import sigma_gak, cdist_gak
 from tslearn.neighbors import KNeighborsTimeSeriesClassifier
+from tslearn.preprocessing import TimeSeriesScalerMeanVariance, TimeSeriesScalerMinMax
 
 from statsmodels.tsa.seasonal import seasonal_decompose
 from pyramid.arima import auto_arima
@@ -115,19 +116,48 @@ class Sloth:
 
         return predicted_labels
     
-    def DecomposeSeriesSeasonal(self,series_time_index,series):
+    def DecomposeSeriesSeasonal(self,series_time_index,series, *frequency):
         data = pd.DataFrame(series,index = series_time_index,columns=["Series"])
-        return seasonal_decompose(data, model="multiplicative")
 
-    def PredictSeriesARIMA(self, data, n_periods, seasonal):
-        stepwise_model = auto_arima(data, start_p=1, start_q=1,
-                           max_p=3, max_q=3, m=12,
-                           start_P=0, seasonal=seasonal,
-                           d=1, D=1, trace=True,
-                           error_action='ignore',  
-                           suppress_warnings=True, 
-                           stepwise=True)
+        # use additive model if negative values in time series
+        model = 'multiplicative'
+        if (min(series) <= 0):
+            model = 'additive'
+        
+        # call seasonal_decompose with optional frequency parameter
+        if not frequency:
+            return seasonal_decompose(data, model=model)
+        else:
+            return seasonal_decompose(data, model=model, freq=frequency[0])
+    
+    def ScaleSeriesMeanVariance(self, series):
+        return TimeSeriesScalerMeanVariance(mu = 0, std = 1).fit_transform(series)
+
+    def ScaleSeriesMinMax(self, series, min, max):
+        return TimeSeriesScalerMinMax(min = min, max = max).fit_transform(series)
+
+    def PredictSeriesARIMA(self, data, n_periods, seasonal, *seasonal_differencing):
+        # default: annual data
+        if not seasonal_differencing:
+            stepwise_model = auto_arima(data, start_p=1, start_q=1,
+                            max_p=3, max_q=3, m=1
+                            start_P=0, seasonal=seasonal,
+                            d=1, D=1, trace=True,
+                            error_action='ignore',  
+                            suppress_warnings=True, 
+                            stepwise=True)
+        # specified seasonal differencing parameter
+        else:
+            stepwise_model = auto_arima(data, start_p=1, start_q=1,
+                            max_p=3, max_q=3, m=seasonal_differencing[0]
+                            start_P=0, seasonal=seasonal,
+                            d=1, D=1, trace=True,
+                            error_action='ignore',  
+                            suppress_warnings=True, 
+                            stepwise=True)
         stepwise_model.fit(data)
         future_forecast = stepwise_model.predict(n_periods=n_periods)
 
         return future_forecast
+
+    
