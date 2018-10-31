@@ -14,6 +14,7 @@ from collections import Counter
 from tslearn.clustering import GlobalAlignmentKernelKMeans
 from tslearn.metrics import sigma_gak, cdist_gak
 from tslearn.neighbors import KNeighborsTimeSeriesClassifier
+from tslearn.preprocessing import TimeSeriesScalerMeanVariance, TimeSeriesScalerMinMax
 
 from statsmodels.tsa.seasonal import seasonal_decompose
 from pyramid.arima import auto_arima
@@ -128,6 +129,12 @@ class Sloth:
             return seasonal_decompose(data, model=model)
         else:
             return seasonal_decompose(data, model=model, freq=frequency[0])
+    
+    def ScaleSeriesMeanVariance(self, series):
+        return TimeSeriesScalerMeanVariance(mu = 0, std = 1).fit_transform(series)
+
+    def ScaleSeriesMinMax(self, series, min, max):
+        return TimeSeriesScalerMinMax(min = min, max = max).fit_transform(series)
 
     def PredictSeriesARIMA(self, data, n_periods, seasonal, *seasonal_differencing):
         # default: annual data
@@ -152,3 +159,5 @@ class Sloth:
         future_forecast = stepwise_model.predict(n_periods=n_periods)
 
         return future_forecast
+
+    
