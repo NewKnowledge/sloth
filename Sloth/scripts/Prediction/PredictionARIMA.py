@@ -8,7 +8,11 @@ from Sloth import Sloth
 
 data = pd.read_csv("PRSA_data_2010.1.1-2014.12.31.csv",index_col=0)
 
+<<<<<<< HEAD
 # average data by month and year
+=======
+# take average by year and month
+>>>>>>> 3f0551550a55e53123a6d34081c3f180df3b85eb
 data = data.groupby(['year', 'month']).mean()
 data = data['TEMP']
 print(data.head())
@@ -48,7 +52,10 @@ print(test.shape)
 
 n_periods=test.shape[0]
 seasonal=True
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3f0551550a55e53123a6d34081c3f180df3b85eb
 stepwise_model = auto_arima(data, start_p=1, start_q=1,
                            max_p=5, max_q=5, m=12,
                            start_P=0, seasonal=seasonal,
@@ -56,13 +63,13 @@ stepwise_model = auto_arima(data, start_p=1, start_q=1,
                            error_action='warn',  
                            suppress_warnings=False, 
                            stepwise=True)
-stepwise_model.fit(data)
+stepwise_model.fit(train)
 future_forecast = stepwise_model.predict(n_periods=n_periods)
 
 print("DEBUG::Future forecast:")
 print(future_forecast)
 
-future_forecast = pd.DataFrame(future_forecast,index = test.index,columns=["Prediction"])
+future_forecast = pd.DataFrame(future_forecast,index = test.index, columns=["Prediction"])
 
 plt.subplot(2, 1, 1)
 plt.plot(pd.concat([test,future_forecast],axis=1).values)
