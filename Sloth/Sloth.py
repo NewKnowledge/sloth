@@ -115,13 +115,23 @@ class Sloth:
 
         return predicted_labels
     
-    def DecomposeSeriesSeasonal(self,series_time_index,series):
+    def DecomposeSeriesSeasonal(self,series_time_index,series, *frequency):
         data = pd.DataFrame(series,index = series_time_index,columns=["Series"])
-        return seasonal_decompose(data, model="multiplicative")
 
-    def PredictSeriesARIMA(self, data, n_periods, seasonal):
+        # use additive model if negative values in time series
+        model = 'multiplicative'
+        if (min(series) <= 0):
+            model = 'additive'
+        
+        # call seasonal_decompose with optional frequency parameter
+        if not frequency:
+            return seasonal_decompose(data, model=model)
+        else:
+            return seasonal_decompose(data, model=model, freq=frequency)
+
+    def PredictSeriesARIMA(self, data, n_periods, seasonal, seasonal_differencing):
         stepwise_model = auto_arima(data, start_p=1, start_q=1,
-                           max_p=3, max_q=3, m=12,
+                           max_p=3, max_q=3, m=seasonal_differencing,
                            start_P=0, seasonal=seasonal,
                            d=1, D=1, trace=True,
                            error_action='ignore',  
