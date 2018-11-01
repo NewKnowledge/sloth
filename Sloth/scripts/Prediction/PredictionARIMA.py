@@ -32,7 +32,7 @@ plt.tight_layout()
 plt.show()
 
 Sloth = Sloth()
-result = Sloth.DecomposeSeriesSeasonal(data.values, data.index, 12)
+result = Sloth.DecomposeSeriesSeasonal(data.index, data.values, 12)
 fig = result.plot()
 plt.show()
 
@@ -42,7 +42,7 @@ test = data.loc[2014:]
 print("DEBUG:the size of test is:")
 print(test.shape)
 
-future_forecast = Sloth.PredictSeriesARIMA(train,test.shape[0],True)
+future_forecast = Sloth.PredictSeriesARIMA(train,test.shape[0],True, 12)
 
 '''
 #n_periods=test.shape[0]
