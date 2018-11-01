@@ -6,9 +6,9 @@ from pyramid.arima import auto_arima
 
 from Sloth import Sloth
 
-data = pd.read_csv("datasets/PRSA_data_2010.1.1-2014.12.31.csv",index_col=0)
-data = data.groupby(['year', 'month']).mean()
-data = data['TEMP']
+data = pd.read_csv("datasets/learningData.csv",index_col=0)
+data = data['sunspot.month'].dropna()
+data = data.loc[49:500]
 print(data.head())
 
 # clean data - set datetime, take temperature at hour 0, set index
@@ -23,40 +23,29 @@ print(data.head())
 
 plt.figure()
 plt.subplot(1, 1, 1)
-plt.plot(data.values, "k-")
+plt.plot(data.index, data.values, "k-")
 plt.xlabel("data point index")
-plt.ylabel("temperature")
-plt.title("Beijing Temperature 2010-2014")
+plt.ylabel("monthly sunspots")
+plt.title("Monthly Sunspots 1749-1983")
 
 plt.tight_layout()
 plt.show()
 
 Sloth = Sloth()
-result = Sloth.DecomposeSeriesSeasonal(data.index, data.values, 12)
+# The solar cycle is 11 years (https://en.wikipedia.org/wiki/Solar_cycle) 
+# 11*12 = 132 period of seasonal differencing
+result = Sloth.DecomposeSeriesSeasonal(data.index, data.values, 132)
 fig = result.plot()
 plt.show()
 
-train = data.loc[2010:2013]
-test = data.loc[2014:]
+train = data.loc[49:400]
+test = data.loc[401:]
 
 print("DEBUG:the size of test is:")
 print(test.shape)
 
-future_forecast = Sloth.PredictSeriesARIMA(train,test.shape[0],True, 12)
+future_forecast = Sloth.PredictSeriesARIMA(train,test.shape[0],True, 132)
 
-'''
-#n_periods=test.shape[0]
-#seasonal=True
-#stepwise_model = auto_arima(data, start_p=1, start_q=1,
-                           max_p=5, max_q=5, m=12,
-                           start_P=0, seasonal=seasonal,
-                           d=None, D=1, trace=True,
-                           error_action='warn',  
-                           suppress_warnings=False, 
-                           stepwise=True)
-#stepwise_model.fit(train)
-#future_forecast = stepwise_model.predict(n_periods=n_periods)
-'''
 print("DEBUG::Future forecast:")
 print(future_forecast)
 
@@ -65,11 +54,11 @@ future_forecast = pd.DataFrame(future_forecast,index = test.index, columns=["Pre
 plt.subplot(2, 1, 1)
 plt.plot(pd.concat([test,future_forecast],axis=1).values)
 plt.xlabel("data point index")
-plt.ylabel("temperature")
+plt.ylabel("monthly sunspots")
 plt.title("Future Forecast")
 
 plt.subplot(2, 1, 2)
 plt.plot(pd.concat([data,future_forecast],axis=1).values)
 plt.xlabel("data point index")
-plt.ylabel("temperature")
+plt.ylabel("monthly sunspots")
 plt.show()
