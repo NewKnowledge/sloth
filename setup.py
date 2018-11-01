@@ -3,7 +3,7 @@ from distutils.core import setup
 setup(name='Sloth',
     version='2.0.2',
     description='Time series tools for classification, forecasting and clustering',
-    packages=['Sloth','Sloth.scripts.ShapeletLearning'],
+    packages=['Sloth'],
     install_requires=['scikit-learn >= 0.18.1',
         'fastdtw>=0.3.2',
         'pandas >= 0.19.2',

@@ -14,7 +14,7 @@ import pandas as pd
     # epochs                : number of training epochs
     # length                : base shapelet length, expressed as fraction of length of time series
     # num_shapelet_lengths  : number of different shapelet lengths
-class Shapelets:
+class Shapelets():
     def __init__(self, X_train, y_train, epochs, length, num_shapelet_lengths):
         self.shapelet_sizes = grabocka_params_to_shapelet_size_dict(n_ts = X_train.shape[0], 
                     ts_sz = X_train.shape[1], 
@@ -27,7 +27,7 @@ class Shapelets:
                             max_iter=epochs,
                             verbose_level=0)
         
-        # scale training data
+        # scale training data to between 0 and 1
         X_train_scaled = self.__ScaleData(X_train)
 
         # fit classifier
