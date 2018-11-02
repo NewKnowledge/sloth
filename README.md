@@ -7,27 +7,27 @@ This library contains two classes, **Sloth** and **Shapelets**. **Sloth** contai
 
 ## Sloth
 
-# DecomposeSeriesSeasonal
+#### DecomposeSeriesSeasonal
 Inputs = time series index, time series, (optionally) frequency of time series. Outputs = object with observed, trend, seasonal, and residual components. 
 
-# ScaleSeriesMeanVariance
+#### ScaleSeriesMeanVariance
 Inputs = time series. Outputs = time series scaled with mean = 0, variance = 1.
 
-# ScaleSeriesMinMax
+#### ScaleSeriesMinMax
 Inputs = time series, min, max. Outputs = time series scaled with min = min, max = max.
 
-# PredictSeriesArima
+#### PredictSeriesArima
 Inputs = data frame containing two columns, 1) time series index and 2) time series values, number of periods to predict in the future, whether the time series is seasonal, and (optionally) the period of seasonal differencing. Outputs = time series prediction for the number of periods to predict.
 
 ## Shapelets
 
-# PredictClasses
+#### PredictClasses
 Inputs = time series. Output = classification of time series as one of time series in training data. 
 
-# VisualizeShapelets
+#### VisualizeShapelets
 Inputs = none. Output = graphs of learned shapelets
 
-# VisualizeShapeletLocations
+#### VisualizeShapeletLocations
 Inputs = time series, id of time series from training data. Output = graph of learned shapelets superimposed on indexed time series from training data. 
 
 [DBSCAN clustering]: http://scikit-learn.org/stable/modules/generated/sklearn.cluster.DBSCAN.html
