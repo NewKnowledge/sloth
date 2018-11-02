@@ -1,4 +1,4 @@
-## Sloth
+# Sloth
 Sloth - Strategic Labeling Over Time Heuristics - Tools for time series analysis
 
 This library contains two classes, **Sloth** and **Shapelets**. **Sloth** contains tools for time series analysis: generating a similarity matrix, [DBSCAN clustering], [HDBSCAN clustering], KMEANS clustering, KNN classification, [seasonal decomposition], and [ARIMA prediction]. **Shapelets** learns representative [time series subsequences] to use for time series classification. The shapelets that **Shapelets** learns are not unique solutions. 
