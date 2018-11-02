@@ -32,7 +32,7 @@ Inputs = time series, id of time series from training data. Output = graph of le
 
 [DBSCAN clustering]: http://scikit-learn.org/stable/modules/generated/sklearn.cluster.DBSCAN.html
 [HDBSCAN clustering]: https://hdbscan.readthedocs.io/en/latest/how_hdbscan_works.html
-[seasonal decmposition]: https://www.statsmodels.org/dev/generated/statsmodels.tsa.seasonal.seasonal_decompose.html
-[ARIMA predcition]: https://www.alkaline-ml.com/pyramid/modules/generated/pyramid.arima.auto_arima.html
+[seasonal decomposition]: https://www.statsmodels.org/dev/generated/statsmodels.tsa.seasonal.seasonal_decompose.html
+[ARIMA prediction]: https://www.alkaline-ml.com/pyramid/modules/generated/pyramid.arima.auto_arima.html
 [time series subsequences]: http://fs.ismll.de/publicspace/LearningShapelets/
 
