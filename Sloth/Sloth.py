@@ -126,7 +126,10 @@ class Sloth:
         
         # call seasonal_decompose with optional frequency parameter
         if not frequency:
-            return seasonal_decompose(data, model=model)
+            if isinstance(series_time_index, pd.DatetimeIndex):
+                return seasonal_decompose(data, model=model)
+            else:
+                return seasonal_decompose(data, model=model, freq=1)
         else:
             return seasonal_decompose(data, model=model, freq=frequency[0])
     
