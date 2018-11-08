@@ -7,8 +7,8 @@ np.random.seed(0)
 
 # constants
 epochs = 10000
-shapelet_length = 0.2
-num_shapelet_lengths = 3
+shapelet_length = 0.175
+num_shapelet_lengths = 2
 time_series_id = 0
 
 # load data - Cached datasets
