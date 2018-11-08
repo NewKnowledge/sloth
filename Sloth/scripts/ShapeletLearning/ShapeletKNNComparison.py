@@ -8,7 +8,7 @@ np.random.seed(0)
 
 # constants
 epochs = 10000
-shapelet_length = 0.1
+shapelet_length = 0.175
 num_shapelet_lengths = 2
 time_series_id = 0
 n_neighbors = 5
@@ -32,5 +32,5 @@ predictions_shapelets = trace_shapelets.PredictClasses(X_test)
 print("Accuracy Shapelets = ", accuracy_score(y_test, predictions_shapelets))
 Sloth = Sloth()
 predictions_knn = Sloth.ClassifySeriesKNN(X_test, X_train, y_train, n_neighbors)
-print("Accuracy Shapelets = ", accuracy_score(y_test, predictions_knn))
+print("Accuracy KNN = ", accuracy_score(y_test, predictions_knn))
 

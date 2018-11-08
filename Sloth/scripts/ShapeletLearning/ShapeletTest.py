@@ -7,8 +7,8 @@ np.random.seed(0)
 
 # constants
 epochs = 10000
-shapelet_length = 0.175
-num_shapelet_lengths = 2
+shapelet_length = 0.2
+num_shapelet_lengths = 3
 time_series_id = 0
 
 # load data - Cached datasets
@@ -23,7 +23,7 @@ y_train = numpy.array([1,1,1,1,1,1,0,0,0,0,0,0])
 '''
 
 # load data - Chlorine concentration test
-'''
+
 path = 'datasets/66_chlorineConcentration/TRAIN/dataset_TRAIN/tables/learningData.csv'
 training = pd.read_csv(path, index_col = 0)
 y_train = training['label'].values
@@ -43,7 +43,6 @@ X_test.append(pd.read_csv(testing_path + '/' + testing['timeseries_file'][467], 
 for i in range(468, 467+len(testing)):
     X_test.append(pd.read_csv(testing_path + '/' + testing['timeseries_file'][i], index_col = 0).values)
 X_test = np.asarray(X_test)
-'''
 
 # load data - Coffee concentration from UCR
 '''
@@ -62,7 +61,7 @@ X_test = np.asarray(X_test)
 '''
 
 # load data - Diatom size reduction
-
+'''
 train = pd.read_csv('datasets/DiatomSizeReduction_TRAIN.txt', delim_whitespace = True, header=None)
 y_train = train[0].values
 X_train = []
@@ -75,7 +74,7 @@ X_test = []
 for i in range(0, test.shape[0]):
     X_test.append(pd.DataFrame(test.loc[i,1:test.shape[1]-1]).values)
 X_test = np.asarray(X_test)
-
+'''
 # create shapelets
 trace_shapelets = Shapelets(X_train, y_train, epochs, shapelet_length, num_shapelet_lengths)
 
