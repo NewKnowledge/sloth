@@ -161,8 +161,8 @@ class Sloth:
         stepwise_model.fit(data)
         return stepwise_model
     
-    def PredictSeriesARIMA(self, arima_classifiedc548202866064876bd5d29029a5ecfbf82d1a52r, n_periods):
-        future_forecast = stepwise_model.predict(n_periods=n_periods)
+    def PredictSeriesARIMA(self, arima_classifier, n_periods):
+        future_forecast = arima_classifier.predict(n_periods=n_periods)
         return future_forecast
 
     
