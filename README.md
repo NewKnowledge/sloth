@@ -16,8 +16,11 @@ Inputs = time series. Outputs = time series scaled with mean = 0, variance = 1.
 #### ScaleSeriesMinMax
 Inputs = time series, min, max. Outputs = time series scaled with min = min, max = max.
 
+#### FitSeriesArima
+Inputs = data frame containing two columns, 1) time series index and 2) time series values, whether the time series is seasonal, and (optionally) the period of seasonal differencing. Outputs = ARIMA model fit on the input data
+
 #### PredictSeriesArima
-Inputs = data frame containing two columns, 1) time series index and 2) time series values, number of periods to predict in the future, whether the time series is seasonal, and (optionally) the period of seasonal differencing. Outputs = time series prediction for the number of periods to predict.
+Inputs = number of periods to predict in the future. Outputs = time series prediction for the number of periods to predict.
 
 ## Shapelets
 
