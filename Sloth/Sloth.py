@@ -139,7 +139,7 @@ class Sloth:
     def ScaleSeriesMinMax(self, series, min, max):
         return TimeSeriesScalerMinMax(min = min, max = max).fit_transform(series)
 
-    def PredictSeriesARIMA(self, data, n_periods, seasonal, *seasonal_differencing):
+    def FitSeriesARIMA(self, data, seasonal, *seasonal_differencing):
         # default: annual data
         if not seasonal_differencing:
             stepwise_model = auto_arima(data, start_p=1, start_q=1,
@@ -159,8 +159,10 @@ class Sloth:
                             suppress_warnings=True, 
                             stepwise=True)
         stepwise_model.fit(data)
+        return stepwise_model
+    
+    def PredictSeriesARIMA(self, arima_classifier, n_periods):
         future_forecast = stepwise_model.predict(n_periods=n_periods)
-
         return future_forecast
 
     

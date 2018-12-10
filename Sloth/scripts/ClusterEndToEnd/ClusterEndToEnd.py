@@ -15,7 +15,7 @@ eps = 20
 min_samples = 2
 
 Sloth = Sloth()
-datapath = '/home/azunre/Documents/NewKnowledge/sloth-dev/data/UCR_TS_Archive_2015/synthetic_control/synthetic_control_TRAIN'
+datapath = 'data/home/jgleason/Downloads/UCR_TS_Archive_2015/synthetic_control/synthetic_control_TRAIN'
 series = pd.read_csv(datapath,dtype='float',header=None)
 nrows,ncols = series.shape
 
