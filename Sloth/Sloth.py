@@ -4,7 +4,7 @@ import pandas as pd
 #matplotlib.use('Agg') # uncomment for docker images
 import matplotlib.pyplot as plt
 import pickle
-from scipy import sparse, stats
+from scipy import sparse
 import hdbscan
 from sklearn.cluster import DBSCAN
 from scipy.spatial.distance import euclidean
@@ -138,15 +138,7 @@ class Sloth:
 
     def ScaleSeriesMinMax(self, series, min, max):
         return TimeSeriesScalerMinMax(min = min, max = max).fit_transform(series)
-
-    def ScaleSeriesBoxCox(self, series):
-        min_value = min(series)
-        if min_value < 0:
-        # scale series to positive values only
-            series = [i + abs(min_value) + 1 for i in series]
-        transformed, lam = stats.boxcox(series)
-        return transformed
-
+        
     def FitSeriesARIMA(self, data, seasonal, *seasonal_differencing):
         # default: annual data
         if not seasonal_differencing:
