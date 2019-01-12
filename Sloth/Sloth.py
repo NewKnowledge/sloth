@@ -39,28 +39,9 @@ class Sloth:
     def GenerateSimilarityMatrix(self,series):
         nrows,ncols = series.shape
         # now, compute the whole matrix of similarities
-        
-        #SimilarityMatrix = np.zeros((nrows,nrows))
         print("Computing similarity matrix...")
         distances = [[fastdtw(series[j,:], series[i,:],dist=euclidean) for i in range(j, nrows)] for j in np.arange(nrows)]
         SimilarityMatrix = np.array([[0]*(nrows-len(i)) + i for i in distances])
-        '''
-        for j in np.arange(nrows):
-            if j%10==0:
-                print("Processing matrix row for time series "+str(j))
-            try:
-                row_series = series[j,:]
-                for i in range(j, nrows):
-                    try:
-                        column_series = series[i,:]
-                        distance,path = fastdtw(row_series,column_series,dist=euclidean)
-                        SimilarityMatrix[j,i] = distance
-                    except Exception as e:
-                        print(e)
-                        pass
-            except:
-                pass
-        '''
         SimilarityMatrix[np.tril_indices(nrows,-1)] = SimilarityMatrix.T[np.tril_indices(nrows,-1)]
         print("DONE!")
 	
