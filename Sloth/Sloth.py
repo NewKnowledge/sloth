@@ -39,25 +39,12 @@ class Sloth:
     def GenerateSimilarityMatrix(self,series):
         nrows,ncols = series.shape
         # now, compute the whole matrix of similarities
-        SimilarityMatrix = np.zeros((nrows,nrows))
         print("Computing similarity matrix...")
-        for j in np.arange(nrows):
-            if j%10==0:
-                print("Processing matrix row for time series "+str(j))
-            try:
-                row_series = series[j,:]
-                for i in np.arange(nrows):
-                    try:
-                        column_series = series[i,:]
-                        distance,path = fastdtw(row_series,column_series,dist=euclidean)
-                        SimilarityMatrix[j,i] = distance
-                    except Exception as e:
-                        print(e)
-                        pass
-            except:
-                pass
+        distances = [[fastdtw(series[j,:], series[i,:],dist=euclidean) for i in range(j, nrows)] for j in np.arange(nrows)]
+        SimilarityMatrix = np.array([[0]*(nrows-len(i)) + i for i in distances])
+        SimilarityMatrix[np.tril_indices(nrows,-1)] = SimilarityMatrix.T[np.tril_indices(nrows,-1)]
         print("DONE!")
-
+	
         return SimilarityMatrix
 
     def ClusterSimilarityMatrix(self,SimilarityMatrix,eps,min_samples):
@@ -138,7 +125,7 @@ class Sloth:
 
     def ScaleSeriesMinMax(self, series, min, max):
         return TimeSeriesScalerMinMax(min = min, max = max).fit_transform(series)
-
+        
     def FitSeriesARIMA(self, data, seasonal, *seasonal_differencing):
         # default: annual data
         if not seasonal_differencing:
