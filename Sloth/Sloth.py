@@ -11,7 +11,7 @@ from scipy.spatial.distance import euclidean
 from fastdtw import fastdtw
 from collections import Counter
 
-from tslearn.clustering import GlobalAlignmentKernelKMeans
+from tslearn.clustering import TimeSeriesKMeans, GlobalAlignmentKernelKMeans
 from tslearn.metrics import sigma_gak, cdist_gak
 from tslearn.neighbors import KNeighborsTimeSeriesClassifier
 from tslearn.preprocessing import TimeSeriesScalerMeanVariance, TimeSeriesScalerMinMax
@@ -88,11 +88,18 @@ class Sloth:
         SimilarityMatrix = np.load(filename+'.npy')
         return SimilarityMatrix
 
-    def ClusterSeriesKMeans(self,series,n_clusters):
+    # algorithm specifies which kmeans clustering algorithm to use form tslearn
+    # options are 'GlobalAlignmentKernelKMeans' and 'TimeSeriesKMeans'
+    def ClusterSeriesKMeans(self,series,n_clusters,algorithm = 'GlobalAlignmentKernelKMeans'):
+        assert algorithm == 'GlobalAlignmentKernelKMeans' or algorithm == 'TimeSeriesKMeans', \
+            "algorithm must be one of \'GlobalAlignmentKernelKMeans\' or \'TimeSeriesKMeans\'"
         seed = 0
         np.random.seed(seed)
-        gak_km = GlobalAlignmentKernelKMeans(n_clusters=n_clusters, sigma=sigma_gak(series), n_init=20, verbose=True, random_state=seed)
-        y_pred = gak_km.fit_predict(series)
+        if algorithm == 'TimeSeriesKMeans':
+            km = TimeSeriesKMeans(n_clusters=n_clusters, n_init=20, verbose=True, random_state=seed)
+        else:
+            km = GlobalAlignmentKernelKMeans(n_clusters=n_clusters, sigma=sigma_gak(series), n_init=20, verbose=True, random_state=seed)
+        y_pred = km.fit_predict(series)
 
         return y_pred
 
