@@ -40,7 +40,7 @@ class Sloth:
         nrows,ncols = series.shape
         # now, compute the whole matrix of similarities
         print("Computing similarity matrix...")
-        distances = [[fastdtw(series[j,:], series[i,:],dist=euclidean) for i in range(j, nrows)] for j in np.arange(nrows)]
+        distances = [[fastdtw(series[j,:], series[i,:],dist=euclidean)[0] for i in range(j, nrows)] for j in np.arange(nrows)]
         SimilarityMatrix = np.array([[0]*(nrows-len(i)) + i for i in distances])
         SimilarityMatrix[np.tril_indices(nrows,-1)] = SimilarityMatrix.T[np.tril_indices(nrows,-1)]
         print("DONE!")
