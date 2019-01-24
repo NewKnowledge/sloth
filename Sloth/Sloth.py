@@ -43,10 +43,10 @@ class Sloth:
         try:
                 distances = [[fastdtw(series[j,:], series[i,:],dist=euclidean)[0] for i in range(j, nrows)] for j in np.arange(nrows)]
         except Exception as e:
-		print(e)
-		pass
+	        print(e)
+	        pass
 	
-	SimilarityMatrix = np.array([[0]*(nrows-len(i)) + i for i in distances])
+        SimilarityMatrix = np.array([[0]*(nrows-len(i)) + i for i in distances])
         SimilarityMatrix[np.tril_indices(nrows,-1)] = SimilarityMatrix.T[np.tril_indices(nrows,-1)]
         print("DONE!")
 	
