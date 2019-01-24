@@ -38,10 +38,10 @@ class Sloth:
 
     def GenerateSimilarityMatrix(self,series):
         nrows,ncols = series.shape
-        # now, compute the whole matrix of similarities
+        # now, compute the whole matrix of similarities 
         print("Computing similarity matrix...")
-	try:
-        	distances = [[fastdtw(series[j,:], series[i,:],dist=euclidean)[0] for i in range(j, nrows)] for j in np.arange(nrows)]
+        try:
+                distances = [[fastdtw(series[j,:], series[i,:],dist=euclidean)[0] for i in range(j, nrows)] for j in np.arange(nrows)]
         except Exception as e:
 		print(e)
 		pass
