@@ -15,7 +15,7 @@ import pandas as pd
     # length                : base shapelet length, expressed as fraction of length of time series
     # num_shapelet_lengths  : number of different shapelet lengths
 class Shapelets():
-    def __init__(self, X_train, y_train, epochs, length, num_shapelet_lengths):
+    def __init__(self, X_train, y_train, epochs, length, num_shapelet_lengths, weight_regularizer):
         self.shapelet_sizes = grabocka_params_to_shapelet_size_dict(n_ts = X_train.shape[0], 
                     ts_sz = X_train.shape[1], 
                     n_classes = len(set(y_train)), 
@@ -23,7 +23,7 @@ class Shapelets():
                     r = num_shapelet_lengths)
         self.shapelet_clf = ShapeletModel(n_shapelets_per_size=self.shapelet_sizes,
                             optimizer=Adagrad(lr=.1),
-                            weight_regularizer=.01,
+                            weight_regularizer=weight_regularizer,
                             max_iter=epochs,
                             verbose_level=0)
         
@@ -82,6 +82,7 @@ if __name__ == '__main__':
     epochs = 200
     shapelet_length = 0.1
     num_shapelet_lengths = 2
+    weight_regularizer = .01
     time_series_id = 0
 
     # create shapelets
