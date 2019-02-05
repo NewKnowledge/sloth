@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(name='Sloth',
-    version='2.0.3',
+    version='2.0.2',
     description='Time series tools for classification, forecasting and clustering',
     packages=['Sloth'],
     install_requires=['scikit-learn >= 0.18.1',
