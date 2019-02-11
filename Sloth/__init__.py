@@ -1,8 +1,6 @@
-from Sloth.Sloth import Sloth
 from Sloth.Shapelets import Shapelets
 
-__version__ = '2.0.2'
+__version__ = '2.0.4'
 
-__all__ = [ 'Sloth', 
-            'Shapelets',
+__all__ = [ 'Shapelets',
             ]
