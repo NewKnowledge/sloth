@@ -4,7 +4,7 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 
 from pyramid.arima import auto_arima
 
-from Sloth import Sloth
+from Sloth import predict
 
 data = pd.read_csv("datasets/PRSA_data_2010.1.1-2014.12.31.csv",index_col=0)
 data = data.groupby(['year', 'month']).mean()
@@ -31,8 +31,8 @@ plt.title("Beijing Temperature 2010-2014")
 plt.tight_layout()
 plt.show()
 
-Sloth = Sloth()
-result = Sloth.DecomposeSeriesSeasonal(data.index, data.values, 12)
+#Sloth = Sloth()
+result = predict.DecomposeSeriesSeasonal(data.index, data.values, 12)
 fig = result.plot()
 plt.show()
 
@@ -42,7 +42,7 @@ test = data.loc[2014:]
 print("DEBUG:the size of test is:")
 print(test.shape)
 
-future_forecast = Sloth.PredictSeriesARIMA(train,test.shape[0],True, 12)
+future_forecast = predict.PredictSeriesARIMA(train,test.shape[0],True, 12)
 
 '''
 #n_periods=test.shape[0]

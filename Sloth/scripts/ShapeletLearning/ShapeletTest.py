@@ -1,4 +1,4 @@
-from Sloth import Shapelets
+from Sloth.classify import Shapelets
 from tslearn.datasets import CachedDatasets
 from sklearn.metrics import accuracy_score
 

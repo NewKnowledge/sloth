@@ -2,7 +2,7 @@ import numpy
 import matplotlib
 #matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from Sloth import Sloth
+from Sloth import cluster
 
 from tslearn.datasets import CachedDatasets
 from tslearn.preprocessing import TimeSeriesScalerMeanVariance
@@ -18,8 +18,8 @@ sz = X_train.shape[1]
 print("DEBUG::X_train.shape is")
 print(X_train.shape)
 
-Sloth = Sloth()
-y_pred = Sloth.ClusterSeriesKMeans(X_train,3)
+#Sloth = Sloth()
+y_pred = cluster.ClusterSeriesKMeans(X_train,3)
 
 plt.figure()
 for yi in range(3):
