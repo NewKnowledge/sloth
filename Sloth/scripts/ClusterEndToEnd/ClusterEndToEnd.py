@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from Sloth import Sloth
+from Sloth import cluster
 
 import matplotlib
 #matplotlib.use('TkAgg')
@@ -14,7 +14,6 @@ from tslearn.preprocessing import TimeSeriesScalerMeanVariance
 eps = 20
 min_samples = 2
 
-Sloth = Sloth()
 datapath = '/data/home/jgleason/Downloads/UCR_TS_Archive_2015/synthetic_control/synthetic_control_TRAIN'
 series = pd.read_csv(datapath,dtype='float',header=None)
 nrows,ncols = series.shape
@@ -31,12 +30,12 @@ X_train = X_train[:,1:]
 
 LOAD = False # Flag for loading similarity matrix from file if it has been computed before
 if(LOAD):
-    SimilarityMatrix = Sloth.LoadSimilarityMatrix()    
+    SimilarityMatrix = cluster.LoadSimilarityMatrix()    
 else:
-    SimilarityMatrix = Sloth.GenerateSimilarityMatrix(X_train[:200])
-    Sloth.SaveSimilarityMatrix(SimilarityMatrix, 'sim_matrix_new')
+    SimilarityMatrix = cluster.GenerateSimilarityMatrix(X_train[:200])
+    cluster.SaveSimilarityMatrix(SimilarityMatrix, 'sim_matrix_new')
 
-nclusters, labels, cnt = Sloth.ClusterSimilarityMatrix(SimilarityMatrix,eps,min_samples)
+nclusters, labels, cnt = cluster.ClusterSimilarityMatrix(SimilarityMatrix,eps,min_samples)
 
 series_np = series[:100].values
 
