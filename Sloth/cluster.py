@@ -9,7 +9,7 @@ from fastdtw import fastdtw
 from collections import Counter
 from tslearn.metrics import sigma_gak, cdist_gak
 
-def GenerateSimilarityMatrix(self,series):
+def GenerateSimilarityMatrix(series):
     nrows,ncols = series.shape
     # now, compute the whole matrix of similarities 
     print("Computing similarity matrix...")
@@ -25,7 +25,7 @@ def GenerateSimilarityMatrix(self,series):
 
     return SimilarityMatrix
 
-def ClusterSimilarityMatrix(self,SimilarityMatrix,eps,min_samples):
+def ClusterSimilarityMatrix(SimilarityMatrix,eps,min_samples):
     # perform DBSCAN clustering
     db = DBSCAN(eps=eps,min_samples=min_samples,metric='precomputed')
     db.fit(SimilarityMatrix)
@@ -37,7 +37,7 @@ def ClusterSimilarityMatrix(self,SimilarityMatrix,eps,min_samples):
 
     return nclusters, labels, cnt
 
-def HClusterSimilarityMatrix(self,SimilarityMatrix,min_samples,PLOT=False):
+def HClusterSimilarityMatrix(SimilarityMatrix,min_samples,PLOT=False):
     # perform DBSCAN clustering
     hdb = hdbscan.HDBSCAN(min_cluster_size=min_samples,min_samples=min_samples,metric='precomputed')
     labels = hdb.fit_predict(SimilarityMatrix)
@@ -53,22 +53,22 @@ def HClusterSimilarityMatrix(self,SimilarityMatrix,min_samples,PLOT=False):
 
     return nclusters, labels, cnt
 
-def SaveSimilarityMatrix(self,SimilarityMatrix,filename):
+def SaveSimilarityMatrix(SimilarityMatrix,filename):
     np.save(filename,SimilarityMatrix)
 
-def SaveSparseSimilarityMatrix(self,SimilarityMatrix,filename):
+def SaveSparseSimilarityMatrix(SimilarityMatrix,filename):
     # sometimes the following may make sense - create a sparse representation
     SimilarityMatrixSparse = sparse.csr_matrix(SimilarityMatrix)
     with open(filename,'wb') as outfile:
         pickle.dump(SimilarityMatrixSparse,outfile,pickle.HIGHEST_PROTOCOL)
 
-def LoadSimilarityMatrix(self,filename):
+def LoadSimilarityMatrix(filename):
     SimilarityMatrix = np.load(filename+'.npy')
     return SimilarityMatrix
 
 # algorithm specifies which kmeans clustering algorithm to use form tslearn
 # options are 'GlobalAlignmentKernelKMeans' and 'TimeSeriesKMeans'
-def ClusterSeriesKMeans(self,series,n_clusters,algorithm = 'GlobalAlignmentKernelKMeans'):
+def ClusterSeriesKMeans(series,n_clusters,algorithm = 'GlobalAlignmentKernelKMeans'):
     print(algorithm)
     assert algorithm == 'GlobalAlignmentKernelKMeans' or algorithm == 'TimeSeriesKMeans', \
         "algorithm must be one of \'GlobalAlignmentKernelKMeans\' or \'TimeSeriesKMeans\'"
