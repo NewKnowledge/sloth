@@ -15,15 +15,15 @@ import pandas as pd
     # length                : base shapelet length, expressed as fraction of length of time series
     # num_shapelet_lengths  : number of different shapelet lengths
 class Shapelets():
-    def __init__(self, X_train, y_train, epochs, length, num_shapelet_lengths):
+    def __init__(self, X_train, y_train, epochs, length, num_shapelet_lengths, learning_rate, weight_regularizer):
         self.shapelet_sizes = grabocka_params_to_shapelet_size_dict(n_ts = X_train.shape[0], 
                     ts_sz = X_train.shape[1], 
                     n_classes = len(set(y_train)), 
                     l = length, 
                     r = num_shapelet_lengths)
         self.shapelet_clf = ShapeletModel(n_shapelets_per_size=self.shapelet_sizes,
-                            optimizer=Adagrad(lr=.1),
-                            weight_regularizer=.01,
+                            optimizer=Adagrad(lr = learning_rate),
+                            weight_regularizer=weight_regularizer,
                             max_iter=epochs,
                             verbose_level=0)
         
@@ -83,10 +83,12 @@ if __name__ == '__main__':
     shapelet_length = 0.1
     num_shapelet_lengths = 2
     time_series_id = 0
+    learning_rate = .01
+    weight_regularizer = .01
 
     # create shapelets
     X_train, y_train, X_test, y_test = CachedDatasets().load_dataset("Trace")
-    trace_shapelets = Shapelets(X_train, y_train, epochs, shapelet_length, num_shapelet_lengths)
+    trace_shapelets = Shapelets(X_train, y_train, epochs, shapelet_length, num_shapelet_lengths, learning_rate, weight_regularizer)
 
     # test methods
     predictions = trace_shapelets.PredictClasses(X_test)
