@@ -7,6 +7,7 @@ from sklearn.cluster import DBSCAN
 from scipy.spatial.distance import euclidean
 from fastdtw import fastdtw
 from collections import Counter
+from tslearn.clustering import TimeSeriesKMeans, GlobalAlignmentKernelKMeans
 from tslearn.metrics import sigma_gak, cdist_gak
 
 def GenerateSimilarityMatrix(series):
