@@ -3,7 +3,7 @@ import numpy as np
 #matplotlib.use('Agg') # uncomment for docker images
 import matplotlib.pyplot as plt
 
-def VisuallyCompareTwoSeries(self,series,i1,i2):
+def VisuallyCompareTwoSeries(series,i1,i2):
     fig = plt.figure()
     plt.title("Comparing Time Series")
     ax1 = fig.add_subplot(211)
