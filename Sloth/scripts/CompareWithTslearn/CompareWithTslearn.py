@@ -10,7 +10,7 @@ from tslearn.preprocessing import TimeSeriesScalerMeanVariance
 
 import pandas as pd
 import numpy as np
-from Sloth import Sloth
+from Sloth import cluster
 
 seed = 0
 numpy.random.seed(seed)
@@ -26,16 +26,16 @@ sz = X_train.shape[1]
 
 X_train = X_train.reshape((X_train.shape[0],X_train.shape[1]))
 
-Sloth = Sloth()
+#Sloth = Sloth()
 eps = 20
 min_samples = 2
 LOAD = False # Flag for loading similarity matrix from file if it has been computed before
 if(LOAD):
-    SimilarityMatrix = Sloth.LoadSimilarityMatrix()    
+    SimilarityMatrix = cluster.LoadSimilarityMatrix()    
 else:
-    SimilarityMatrix = Sloth.GenerateSimilarityMatrix(X_train)
-    Sloth.SaveSimilarityMatrix(SimilarityMatrix)
-nclusters, labels, cnt = Sloth.ClusterSimilarityMatrix(SimilarityMatrix,eps,min_samples)
+    SimilarityMatrix = cluster.GenerateSimilarityMatrix(X_train)
+    cluster.SaveSimilarityMatrix(SimilarityMatrix)
+nclusters, labels, cnt = cluster.ClusterSimilarityMatrix(SimilarityMatrix,eps,min_samples)
 
 print("DEBUG::number of clusters found =")
 print(nclusters)

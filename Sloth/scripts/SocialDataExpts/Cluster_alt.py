@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from Sloth import Sloth
+from Sloth import cluster
 import matplotlib
 #matplotlib.use('Agg') # uncomment on a docker image
 import matplotlib.pyplot as plt
@@ -8,7 +8,7 @@ from tslearn.preprocessing import TimeSeriesScalerMeanVariance
 from collections import Counter
 
 
-Sloth = Sloth()
+#Sloth = Sloth()
 #datapath = 'post-freq-counts_craig_09172018.csv'
 datapath = 'post_frequency_garret_0924.csv'
 series = pd.read_csv(datapath,header=0)
@@ -38,26 +38,26 @@ eps = 90
 min_samples = 2
 LOAD = False # Flag for loading similarity matrix from file if it has been computed before
 if(LOAD):
-    SimilarityMatrix = Sloth.LoadSimilarityMatrix('SimilarityMatrix_alt')    
+    SimilarityMatrix = cluster.LoadSimilarityMatrix('SimilarityMatrix_alt')    
 else:
-    SimilarityMatrix = Sloth.GenerateSimilarityMatrix(X_train)
-    Sloth.SaveSimilarityMatrix(SimilarityMatrix,'SimilarityMatrix_alt')
+    SimilarityMatrix = cluster.GenerateSimilarityMatrix(X_train)
+    cluster.SaveSimilarityMatrix(SimilarityMatrix,'SimilarityMatrix_alt')
 
 HIERARCHICAL = False # hierarchical dbscan?
 
 if(HIERARCHICAL):
     ## try hierarchical clustering
-    nclusters, labels, cnt = Sloth.HClusterSimilarityMatrix(SimilarityMatrix,min_samples,PLOT=False)
+    nclusters, labels, cnt = cluster.HClusterSimilarityMatrix(SimilarityMatrix,min_samples,PLOT=False)
     print("The hcluster frequencies are:")
     print(cnt)
 else:
-    nclusters, labels, cnt = Sloth.ClusterSimilarityMatrix(SimilarityMatrix,eps,min_samples)
+    nclusters, labels, cnt = cluster.ClusterSimilarityMatrix(SimilarityMatrix,eps,min_samples)
     print("The cluster frequencies are:")
     print(cnt)
 
 ## this is another clustering method, using tslearn kmeans - very fast, no precomputed similarity matrix required
 # nclusters = 10
-# labels = Sloth.ClusterSeriesKMeans(X_train,nclusters)
+# labels = cluster.ClusterSeriesKMeans(X_train,nclusters)
 # nclusters = len(set(labels))-(1 if -1 in labels else 0)
 # from collections import Counter
 # cnt = Counter()

@@ -11,7 +11,7 @@ from tslearn.preprocessing import TimeSeriesScalerMinMax
 from tslearn.neighbors import KNeighborsTimeSeriesClassifier, KNeighborsTimeSeries
 from tslearn.piecewise import SymbolicAggregateApproximation
 
-from Sloth import Sloth
+from Sloth import classify
 
 numpy.random.seed(0)
 n_ts_per_blob, sz, d, n_blobs = 20, 100, 1, 2
@@ -50,8 +50,8 @@ print(ind)
 print(ind.shape)
 
 # Nearest neighbor classification
-Sloth = Sloth()
-predicted_labels = Sloth.ClassifySeriesKNN(X_test,X_train,y_train,3)
+# = Sloth()
+predicted_labels = classify.ClassifySeriesKNN(X_test,X_train,y_train,3)
 print("\n2. Nearest neighbor classification using Sloth (DTW)")
 print("Correct classification rate:", accuracy_score(y_test, predicted_labels))
 

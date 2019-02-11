@@ -4,7 +4,7 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 
 from pyramid.arima import auto_arima
 
-from Sloth import Sloth
+from Sloth import predict
 
 data = pd.read_csv("datasets/0000_train_ts.csv",index_col=0)
 #data = data['sunspot.month'].dropna()
@@ -31,8 +31,8 @@ plt.title("Chlorine concentration")
 plt.tight_layout()
 plt.show()
 
-Sloth = Sloth()
-result = Sloth.DecomposeSeriesSeasonal(data.index, data.values)
+#Sloth = Sloth()
+result = predict.DecomposeSeriesSeasonal(data.index, data.values)
 fig = result.plot()
 plt.show()
 
@@ -42,7 +42,7 @@ test = data.loc[2701:]
 print("DEBUG:the size of test is:")
 print(test.shape)
 
-future_forecast = Sloth.PredictSeriesARIMA(train,test.shape[0],True, 144)
+future_forecast = predict.PredictSeriesARIMA(train,test.shape[0],True, 144)
 
 print("DEBUG::Future forecast:")
 print(future_forecast)
