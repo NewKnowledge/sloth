@@ -1,15 +1,8 @@
-from tslearn.preprocessing import TimeSeriesScalerMeanVariance, TimeSeriesScalerMinMax
 from nk_logger import get_logger
 from collections.abc import Iterable
 from scipy.ndimage.filters import gaussian_filter1d
 import numpy as np
 from sklearn.kernel_approximation import RBFSampler
-
-def ScaleSeriesMeanVariance(series):
-    return TimeSeriesScalerMeanVariance(mu = 0, std = 1).fit_transform(series)
-
-def ScaleSeriesMinMax(series, min, max):
-    return TimeSeriesScalerMinMax(min = min, max = max).fit_transform(series)
 
 def events_to_rates(event_times, filter_bandwidth=3, num_bins=72, max_time=None):
     """ convert lists of event times into rate functions with a discrete time bin_size of 1/rates_per_unit.
