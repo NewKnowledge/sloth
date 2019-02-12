@@ -47,6 +47,14 @@ class Shapelets():
     def PredictClasses(self, X_test):
         X_test_scaled = self.__ScaleData(X_test)
         return self.shapelet_clf.predict(X_test_scaled) 
+    
+    # parameters:
+        # X_test            : test data on which to predict class probabilities
+
+    # returns:   class probability predictions for test data set
+    def PredictProbs(self, X_test):
+        X_test_scaled = self.__ScaleData(X_test)
+        return self.shapelet_clf.predict_proba(X_test_scaled) 
 
     # parameters:
     def VisualizeShapelets(self):
