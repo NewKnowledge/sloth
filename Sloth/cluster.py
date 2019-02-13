@@ -11,7 +11,7 @@ from tslearn.clustering import TimeSeriesKMeans, GlobalAlignmentKernelKMeans
 from tslearn.metrics import sigma_gak, cdist_gak
 
 def GenerateSimilarityMatrix(series):
-    nrows,ncols = series.shape
+    nrows,_ = series.shape
     # now, compute the whole matrix of similarities 
     print("Computing similarity matrix...")
     try:
@@ -82,6 +82,8 @@ class KMeans():
             assert algorithm == 'GlobalAlignmentKernelKMeans' or algorithm == 'TimeSeriesKMeans'
         except:
             raise ValueError("algorithm must be one of \'GlobalAlignmentKernelKMeans\' or \'TimeSeriesKMeans\'")
+        self.n_clusters = n_clusters
+        self.random_seed = random_seed
         self.algorithm = algorithm
         self.km = None
 
@@ -94,9 +96,9 @@ class KMeans():
         ''' 
 
         if self.algorithm == 'TimeSeriesKMeans':
-            self.km = TimeSeriesKMeans(n_clusters=n_clusters, n_init=20, verbose=True, random_state=random_seed)
+            self.km = TimeSeriesKMeans(n_clusters=self.n_clusters, n_init=20, verbose=True, random_state=self.random_seed)
         else:
-            self.km = GlobalAlignmentKernelKMeans(n_clusters=n_clusters, sigma=sigma_gak(train), n_init=20, verbose=True, random_state=random_seed)
+            self.km = GlobalAlignmentKernelKMeans(n_clusters=self.n_clusters, sigma=sigma_gak(train), n_init=20, verbose=True, random_state=self.random_seed)
         self.km.fit(train)
 
     def predict(self, test):
