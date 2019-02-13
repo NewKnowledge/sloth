@@ -27,9 +27,10 @@ class Shapelets():
         self.num_shapelet_lengths = num_shapelet_lengths
         self.learning_rate = learning_rate
         self.weight_regularizer = weight_regularizer
+        self.shapelet_sizes = None
         self.shapelet_clf = None
 
-    def fit(X_train, y_train):
+    def fit(self, X_train, y_train):
         '''
             fit shapelet classifier on training data
 
@@ -37,12 +38,12 @@ class Shapelets():
                 X_train                : training time series
                 y_train                : training labels
         ''' 
-        shapelet_sizes = grabocka_params_to_shapelet_size_dict(n_ts = X_train.shape[0], 
+        self.shapelet_sizes = grabocka_params_to_shapelet_size_dict(n_ts = X_train.shape[0], 
                     ts_sz = X_train.shape[1], 
                     n_classes = len(set(y_train)), 
                     l = self.length, 
                     r = self.num_shapelet_lengths)
-        self.shapelet_clf = ShapeletModel(n_shapelets_per_size=shapelet_sizes,
+        self.shapelet_clf = ShapeletModel(n_shapelets_per_size=self.shapelet_sizes,
                             optimizer=Adagrad(lr = self.learning_rate),
                             weight_regularizer=self.weight_regularizer,
                             max_iter=self.epochs,
@@ -111,7 +112,7 @@ class Shapelets():
         plt.show()
 
 class KNN():
-    def __init__(n_neighbors):
+    def __init__(self, n_neighbors):
         '''
             initialize KNN class with dynamic time warping distance metric
 
@@ -131,7 +132,7 @@ class KNN():
 
         return TimeSeriesScalerMinMax().fit_transform(input_data)
 
-     def fit(X_train, y_train):
+    def fit(self, X_train, y_train):
         '''
             fit KNN classifier on training data
 
@@ -170,10 +171,18 @@ if __name__ == '__main__':
 
     # create shapelets
     X_train, y_train, X_test, y_test = CachedDatasets().load_dataset("Trace")
-    trace_shapelets = Shapelets(X_train, y_train, epochs, shapelet_length, num_shapelet_lengths, learning_rate, weight_regularizer)
+    trace_shapelets = Shapelets(epochs, shapelet_length, num_shapelet_lengths, learning_rate, weight_regularizer)
+    trace_shapelets.fit(X_train, y_train)
 
     # test methods
-    predictions = trace_shapelets.PredictClasses(X_test)
-    print("Accuracy = ", accuracy_score(y_test, predictions))
+    predictions = trace_shapelets.predict(X_test)
+    print("Shapelet Accuracy = ", accuracy_score(y_test, predictions))
     trace_shapelets.VisualizeShapelets()
     trace_shapelets.VisualizeShapeletLocations(X_test, time_series_id)
+
+    # test KNN classifier
+    knn_clf = KNN(n_neighbors = 3)
+    knn_clf.fit(X_train, y_train)
+    knn_preds = knn_clf.predict(X_test)
+    print("KNN Accuracy = ", accuracy_score(y_test, knn_preds))
+
