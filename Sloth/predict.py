@@ -19,7 +19,7 @@ def DecomposeSeriesSeasonal(series_time_index,series, *frequency):
     else:
         return seasonal_decompose(data, model=model, freq=frequency[0])
 
-class ARIMA():
+class Arima():
     def __init__(self, seasonal, *seasonal_differencing):
         '''
             initialize ARIMA class
