@@ -10,23 +10,42 @@ from tslearn.shapelets import ShapeletModel, grabocka_params_to_shapelet_size_di
 from tslearn.utils import ts_size
 from tslearn.neighbors import KNeighborsTimeSeriesClassifier
 
-# parameters:
-    # epochs                : number of training epochs
-    # length                : base shapelet length, expressed as fraction of length of time series
-    # num_shapelet_lengths  : number of different shapelet lengths
-    # learning rate         : learning rate of Keras optimizer
-    # weight regularizer    : weight regularization used when fitting model
 class Shapelets():
-    def __init__(self, X_train, y_train, epochs, length, num_shapelet_lengths, learning_rate, weight_regularizer):
-        self.shapelet_sizes = grabocka_params_to_shapelet_size_dict(n_ts = X_train.shape[0], 
+    def __init__(self, epochs, length, num_shapelet_lengths, learning_rate, weight_regularizer):
+        '''
+            initialize shapelet hyperparameters
+
+            hyperparameters:
+                epochs                : number of training epochs
+                length                : base shapelet length, expressed as fraction of length of time series
+                num_shapelet_lengths  : number of different shapelet lengths
+                learning rate         : learning rate of Keras optimizer
+                weight regularizer    : weight regularization used when fitting model
+        '''
+        self.epochs = epochs
+        self.length = length
+        self.num_shapelet_lengths = num_shapelet_lengths
+        self.learning_rate = learning_rate
+        self.weight_regularizer = weight_regularizer
+        self.shapelet_clf = None
+
+    def fit(X_train, y_train):
+        '''
+            fit shapelet classifier on training data
+
+            parameters:
+                X_train                : training time series
+                y_train                : training labels
+        ''' 
+        shapelet_sizes = grabocka_params_to_shapelet_size_dict(n_ts = X_train.shape[0], 
                     ts_sz = X_train.shape[1], 
                     n_classes = len(set(y_train)), 
-                    l = length, 
-                    r = num_shapelet_lengths)
-        self.shapelet_clf = ShapeletModel(n_shapelets_per_size=self.shapelet_sizes,
-                            optimizer=Adagrad(lr = learning_rate),
-                            weight_regularizer=weight_regularizer,
-                            max_iter=epochs,
+                    l = self.length, 
+                    r = self.num_shapelet_lengths)
+        self.shapelet_clf = ShapeletModel(n_shapelets_per_size=shapelet_sizes,
+                            optimizer=Adagrad(lr = self.learning_rate),
+                            weight_regularizer=self.weight_regularizer,
+                            max_iter=self.epochs,
                             verbose_level=0)
         
         # scale training data to between 0 and 1
@@ -35,29 +54,32 @@ class Shapelets():
         # fit classifier
         self.shapelet_clf.fit(X_train_scaled, y_train)
 
-    # parameters:
-        # input_data        : input data to rescale
     def __ScaleData(self, input_data):
+        ''' 
+            scale input data to range [0,1]
+
+            parameters:
+                input_data        : input data to rescale
+        '''
+
         return TimeSeriesScalerMinMax().fit_transform(input_data)
 
-    # parameters:
-        # X_test            : test data on which to predict classes
+    def predict(self, X_test):
+        '''
+            classifications for time series in test data set
 
-    # returns:   class predictions for test data set
-    def PredictClasses(self, X_test):
+            parameters:
+                X_test:     test time series on which to predict classes
+
+            returns: classifications for test data set
+        '''
         X_test_scaled = self.__ScaleData(X_test)
         return self.shapelet_clf.predict(X_test_scaled) 
-    
-    # parameters:
-        # X_test            : test data on which to predict class probabilities
 
-    # returns:   class probability predictions for test data set
-    def PredictProbs(self, X_test):
-        X_test_scaled = self.__ScaleData(X_test)
-        return self.shapelet_clf.predict_proba(X_test_scaled) 
-
-    # parameters:
     def VisualizeShapelets(self):
+        '''
+            visualize all of shapelets learned by shapelet classifier
+        '''
         plt.figure()
         for i, sz in enumerate(self.shapelet_sizes.keys()):
             plt.subplot(len(self.shapelet_sizes), 1, i + 1)
@@ -69,10 +91,14 @@ class Shapelets():
         plt.tight_layout()
         plt.show() 
 
-    # parameters:
-        # X_test                : test data set
-        # test_series_id        : id of test time series to visualize
     def VisualizeShapeletLocations(self, X_test, test_series_id):
+        '''
+            visualize shapelets superimposed on one of the test series
+
+            parameters:
+                X_test:             test data set
+                test_series_id:     id of test time series to visualize    
+        '''
         X_test_scaled = self.__ScaleData(X_test)
         locations = self.shapelet_clf.locate(X_test_scaled)
         plt.figure()
@@ -84,12 +110,51 @@ class Shapelets():
         plt.tight_layout()
         plt.show()
 
-def ClassifySeriesKNN(series,series_train,y_train,n_neighbors):
-    knn_clf = KNeighborsTimeSeriesClassifier(n_neighbors=n_neighbors, metric="dtw")
-    knn_clf.fit(series_train, y_train)
-    predicted_labels = knn_clf.predict(series)
+class KNN():
+    def __init__(n_neighbors):
+        '''
+            initialize KNN class with dynamic time warping distance metric
 
-    return predicted_labels
+            hyperparameters:
+                n_neighbors           : number of neighbors on which to make classification decision
+        '''
+        self.n_neighbors = n_neighbors
+        self.knn_clf = KNeighborsTimeSeriesClassifier(n_neighbors=n_neighbors, metric="dtw")
+
+    def __ScaleData(self, input_data):
+        ''' 
+            scale input data to range [0,1]
+
+            parameters:
+                input_data        : input data to rescale
+        '''
+
+        return TimeSeriesScalerMinMax().fit_transform(input_data)
+
+     def fit(X_train, y_train):
+        '''
+            fit KNN classifier on training data
+
+            parameters:
+                X_train                : training time series
+                y_train                : training labels
+        ''' 
+        # scale training data to between 0 and 1
+        X_train_scaled = self.__ScaleData(X_train)
+        self.knn_clf.fit(X_train_scaled, y_train)
+    
+    def predict(self, X_test):
+        '''
+            classifications for time series in test data set
+
+            parameters:
+                X_test:     test time series on which to predict classes
+
+            returns: classifications for test data set
+        '''
+        # scale test data to between 0 and 1
+        X_test_scaled = self.__ScaleData(X_test)
+        return self.knn_clf.predict(X_test_scaled) 
 
 #   test using Trace dataset (Bagnall, Lines, Vickers, Keogh, The UEA & UCR Time Series
 #   Classification Repository, www.timeseriesclassification.com
