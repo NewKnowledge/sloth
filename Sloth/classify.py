@@ -111,7 +111,7 @@ class Shapelets():
         plt.tight_layout()
         plt.show()
 
-class KNN():
+class Knn():
     def __init__(self, n_neighbors):
         '''
             initialize KNN class with dynamic time warping distance metric
@@ -181,7 +181,7 @@ if __name__ == '__main__':
     trace_shapelets.VisualizeShapeletLocations(X_test, time_series_id)
 
     # test KNN classifier
-    knn_clf = KNN(n_neighbors = 3)
+    knn_clf = Knn(n_neighbors = 3)
     knn_clf.fit(X_train, y_train)
     knn_preds = knn_clf.predict(X_test)
     print("KNN Accuracy = ", accuracy_score(y_test, knn_preds))
