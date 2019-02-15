@@ -53,7 +53,7 @@ class Shapelets():
         #X_train_scaled = self.__ScaleData(X_train)
 
         # fit classifier
-        self.shapelet_clf.fit(X_train, y_train)
+        self.shapelet_clf = self.shapelet_clf.fit(X_train, y_train)
 
     def __ScaleData(self, input_data):
         ''' 
