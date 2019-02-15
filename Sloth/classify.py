@@ -50,10 +50,10 @@ class Shapelets():
                             verbose_level=0)
         
         # scale training data to between 0 and 1
-        X_train_scaled = self.__ScaleData(X_train)
+        #X_train_scaled = self.__ScaleData(X_train)
 
         # fit classifier
-        self.shapelet_clf.fit(X_train_scaled, y_train)
+        self.shapelet_clf.fit(X_train, y_train)
 
     def __ScaleData(self, input_data):
         ''' 
@@ -74,8 +74,8 @@ class Shapelets():
 
             returns: classifications for test data set
         '''
-        X_test_scaled = self.__ScaleData(X_test)
-        return self.shapelet_clf.predict(X_test_scaled) 
+        #X_test_scaled = self.__ScaleData(X_test)
+        return self.shapelet_clf.predict(X_test) 
 
     def VisualizeShapelets(self):
         '''
