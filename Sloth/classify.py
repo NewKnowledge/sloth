@@ -1,6 +1,6 @@
 import numpy
 import pandas as pd
-from keras.optimizers import Adagrad
+from keras.optimizers import Adagrad, Adam
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score
 
@@ -44,7 +44,7 @@ class Shapelets():
                     l = self.length, 
                     r = self.num_shapelet_lengths)
         self.shapelet_clf = ShapeletModel(n_shapelets_per_size=self.shapelet_sizes,
-                            optimizer=Adagrad(lr = self.learning_rate),
+                            optimizer=Adam(lr = self.learning_rate),
                             weight_regularizer=self.weight_regularizer,
                             max_iter=self.epochs,
                             verbose_level=0)
