@@ -38,9 +38,9 @@ def ClusterSimilarityMatrix(SimilarityMatrix,eps,min_samples):
 
     return nclusters, labels, cnt
 
-def HClusterSimilarityMatrix(SimilarityMatrix,min_samples,PLOT=False):
+def HClusterSimilarityMatrix(SimilarityMatrix,min_cluster_size, min_samples,PLOT=False):
     # perform DBSCAN clustering
-    hdb = hdbscan.HDBSCAN(min_cluster_size=min_samples,min_samples=min_samples,metric='precomputed')
+    hdb = hdbscan.HDBSCAN(min_cluster_size=min_cluster_size,min_samples=min_samples,metric='precomputed')
     labels = hdb.fit_predict(SimilarityMatrix)
     nclusters = len(set(labels))-(1 if -1 in labels else 0)
     cnt = Counter()
