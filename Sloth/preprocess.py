@@ -18,8 +18,8 @@ def events_to_rates(event_times, filter_bandwidth=3, num_bins=72, max_time=None)
 
     if not max_time:
         max_time = max(max(times) for times in event_times)
-    # NOTE: assumes min time is 0
-    bins = np.linspace(0, max_time, num=num_bins + 1)
+    min_time = min(min(times) for times in event_times)
+    bins = np.linspace(min_time, max_time, num=num_bins + 1)
     rate_times = (bins[1:] + bins[:-1]) / 2
 
     counts = np.array([np.histogram(times, bins=bins)[0] for times in event_times])
