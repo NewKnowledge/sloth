@@ -1,4 +1,3 @@
-from nk_logger import get_logger
 from collections.abc import Iterable
 from scipy.ndimage.filters import gaussian_filter1d
 import numpy as np
@@ -9,7 +8,7 @@ def events_to_rates(event_times, filter_bandwidth=3, num_bins=72, max_time=None)
     Uses a guassian filter over the empirical rate (histogram count / bin_size) """
 
     if len(event_times) == 0:  # if event times is an empty list or array
-        logger.warning("empty event_times list/array")
+        print("empty event_times list/array")
         return np.zeros(num_bins), np.zeros(num_bins)
 
     # if its a nonempty list of floats, wrap in a list
