@@ -33,7 +33,7 @@ class Shapelets():
         self.shapelet_sizes = None
         self.shapelet_clf = None
 
-    def fit(self, X_train, y_train, source_dir, train_split):
+    def fit(self, X_train, y_train, source_dir, train_split = 0.7):
         '''
             fit shapelet classifier on training data
 
@@ -45,7 +45,7 @@ class Shapelets():
         self.shapelet_sizes = {}
         for sz_idx in range(self.num_shapelet_lengths):
             shp_sz = base_size * (sz_idx + 1)
-            d[shp_sz] = int(self.num_shapelets * X_train.shape[1])
+            self.shapelet_sizes[shp_sz] = int(self.num_shapelets * X_train.shape[1])
         self.shapelet_clf = ShapeletModel(n_shapelets_per_size=self.shapelet_sizes,
                             optimizer=Adam(lr = self.learning_rate),
                             weight_regularizer=self.weight_regularizer,
