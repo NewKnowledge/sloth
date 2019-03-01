@@ -49,8 +49,7 @@ class Shapelets():
         self.shapelet_clf = ShapeletModel(n_shapelets_per_size=self.shapelet_sizes,
                             optimizer=Adam(lr = self.learning_rate),
                             weight_regularizer=self.weight_regularizer,
-                            max_iter=self.epochs,
-                            verbose_level=0)
+                            max_iter=self.epochs)
         
         # scale training data to between 0 and 1
         X_train_scaled = self.__ScaleData(X_train)
