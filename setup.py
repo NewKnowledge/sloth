@@ -17,5 +17,6 @@ setup(name='Sloth',
         'hdbscan>=0.8.18', 
         'Keras>=2.1.6',
         'tensorflow>=1.8.0'],
+    dependency_links=['git+https://github.com/NewKnowledge/tslearn@612b91cc0150d0b2c548f7426a7a4fafb864340e#egg=tslearn'],
     include_package_data=True,
 )
