@@ -22,10 +22,9 @@ def events_to_rates(event_times, filter_bandwidth=3, num_bins=72, max_time=None)
     rate_times = (bins[1:] + bins[:-1]) / 2
 
     counts = np.array([np.histogram(times, bins=bins)[0] for times in event_times])
-    bin_size = max_time / num_bins
+    bin_size = (max_time - min_time) / num_bins
     sampled_rates = counts / bin_size
     rate_vals = gaussian_filter1d(sampled_rates, filter_bandwidth, mode="nearest")
-
     return rate_vals, rate_times
 
 def rand_fourier_features(rate_vals, dim=1000, random_state=0):
