@@ -3,7 +3,7 @@ from scipy.ndimage.filters import gaussian_filter1d
 import numpy as np
 from sklearn.kernel_approximation import RBFSampler
 
-def events_to_rates(event_times, filter_bandwidth=3, num_bins=72, max_time=None):
+def _events_to_rates_helper(event_times, num_bins=72, max_time=None):
     """ convert lists of event times into rate functions with a discrete time bin_size of 1/rates_per_unit.
     Uses a guassian filter over the empirical rate (histogram count / bin_size) """
 
@@ -21,11 +21,28 @@ def events_to_rates(event_times, filter_bandwidth=3, num_bins=72, max_time=None)
     bins = np.linspace(min_time, max_time, num=num_bins + 1)
     rate_times = (bins[1:] + bins[:-1]) / 2
 
-    counts = np.array([np.histogram(times, bins=bins)[0] for times in event_times])
     bin_size = (max_time - min_time) / num_bins
+
+    return rate_times, bins, bin_size
+
+def events_to_rates(event_times, filter_bandwidth=3, num_bins=72, max_time=None):
+    """ convert lists of event times into rate functions with a discrete time bin_size of 1/rates_per_unit.
+    Uses a guassian filter over the empirical rate (histogram count / bin_size) """
+
+    rate_times, bins, bin_size = _events_to_rates_helper(event_times, num_bins, max_time)
+    counts = np.array([np.histogram(times, bins=bins)[0] for times in event_times])
     sampled_rates = counts / bin_size
     rate_vals = gaussian_filter1d(sampled_rates, filter_bandwidth, mode="nearest")
     return rate_vals, rate_times
+
+def events_to_densities(event_times, filter_bandwidth=3, num_bins=72, max_time=None):
+    """ convert lists of event times into densities with a discrete time bin_size of 1/rates_per_unit.
+    Uses a guassian filter over the empirical rate (histogram count / bin_size) """
+
+    rate_times, bins, _ = _events_to_rates_helper(event_times, num_bins, max_time)
+    densities = np.array([np.histogram(times, bins=bins, density=True)[0] for times in event_times])
+    rate_vals = gaussian_filter1d(densities, filter_bandwidth, mode="nearest")
+    return rate_vals, rate_times    
 
 def rand_fourier_features(rate_vals, dim=1000, random_state=0):
     if rate_vals.ndim == 1:
