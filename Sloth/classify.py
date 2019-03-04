@@ -79,6 +79,18 @@ class Shapelets():
         X_test_scaled = self.__ScaleData(X_test)
         return self.shapelet_clf.predict(X_test_scaled) 
 
+    def predict_proba(self, X_test):
+        '''
+            class probabilities for time series in test data set
+
+            parameters:
+                X_test:     test time series on which to predict classes
+
+            returns: classifications for test data set
+        '''
+        X_test_scaled = self.__ScaleData(X_test)
+        return self.shapelet_clf.predict_proba(X_test_scaled) 
+
     def VisualizeShapelets(self):
         '''
             visualize all of shapelets learned by shapelet classifier
