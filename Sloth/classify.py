@@ -33,6 +33,30 @@ class Shapelets():
         self.shapelet_sizes = None
         self.shapelet_clf = None
 
+    def clear_session(self):
+        try:
+            assert(self.shapelet_clf is not None)
+        except:
+            raise ValueError("Cannot clear session that has not been initialized")
+        self.shapelet_clf.clear_session()
+        return
+
+    def generate_model(self, series_length, nclasses):
+        '''
+            Generate structure of model used for Shapelet classifier
+        '''
+        if self.shapelet_clf is None:
+            base_size = int(self.length * series_length)
+            self.shapelet_sizes = {}
+            for sz_idx in range(self.num_shapelet_lengths):
+                shp_sz = base_size * (sz_idx + 1)
+                self.shapelet_sizes[shp_sz] = int(self.num_shapelets * series_length)
+            self.shapelet_clf = ShapeletModel(n_shapelets_per_size=self.shapelet_sizes,
+                            optimizer=Adam(lr = self.learning_rate),
+                            weight_regularizer=self.weight_regularizer,
+                            max_iter=self.epochs)
+        return self.shapelet_clf.generate_model(series_length, nclasses)
+
     def fit(self, X_train, y_train, source_dir = None, val_split = 0.3):
         '''
             fit shapelet classifier on training data
@@ -41,15 +65,16 @@ class Shapelets():
                 X_train                : training time series
                 y_train                : training labels
         ''' 
-        base_size = int(self.length * X_train.shape[1])
-        self.shapelet_sizes = {}
-        for sz_idx in range(self.num_shapelet_lengths):
-            shp_sz = base_size * (sz_idx + 1)
-            self.shapelet_sizes[shp_sz] = int(self.num_shapelets * X_train.shape[1])
-        self.shapelet_clf = ShapeletModel(n_shapelets_per_size=self.shapelet_sizes,
-                            optimizer=Adam(lr = self.learning_rate),
-                            weight_regularizer=self.weight_regularizer,
-                            max_iter=self.epochs)
+        if self.shapelet_clf is None:
+            base_size = int(self.length * X_train.shape[1])
+            self.shapelet_sizes = {}
+            for sz_idx in range(self.num_shapelet_lengths):
+                shp_sz = base_size * (sz_idx + 1)
+                self.shapelet_sizes[shp_sz] = int(self.num_shapelets * X_train.shape[1])
+            self.shapelet_clf = ShapeletModel(n_shapelets_per_size=self.shapelet_sizes,
+                                optimizer=Adam(lr = self.learning_rate),
+                                weight_regularizer=self.weight_regularizer,
+                                max_iter=self.epochs)
         
         # scale training data to between 0 and 1
         X_train_scaled = self.__ScaleData(X_train)
