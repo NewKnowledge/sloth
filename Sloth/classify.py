@@ -94,23 +94,36 @@ class Shapelets():
         plt.tight_layout()
         plt.show() 
 
-    def VisualizeShapeletLocations(self, X_test, test_series_id):
+    def VisualizeShapeletLocations(self, X_test, test_series_id, series_size, num_bins, density):
         '''
             visualize shapelets superimposed on one of the test series
 
             parameters:
                 X_test:             test data set
-                test_series_id:     id of test time series to visualize    
+                test_series_id:     id of test time series to visualize  
+                axis:               axis to duplicate to plot shapelets / ts on different y axes  
         '''
         X_test_scaled = self.__ScaleData(X_test)
         locations = self.shapelet_clf.locate(X_test_scaled)
-        plt.figure()
+        time_unit = series_size / num_bins / 60
+        fig, ax1 = plt.subplots()
+        if time_unit == 1:
+            ax1.set_xlabel('Minute of the Hour')
+        elif time_unit == 0.5:
+            ax1.set_xlabel('Half Minute of the Hour')
+        if density:
+            ax1.set_ylabel('Email Density')
+        else:
+            ax1.set_ylabel('Emails per Second')
         plt.title("Locations of shapelet matches (%d shapelets extracted) in test series %d" % (sum(self.shapelet_sizes.values()), test_series_id))
-        plt.plot(X_test[test_series_id].ravel())
+        ax1.plot(X_test[test_series_id].ravel(), linewidth=1)
+        ax2 = ax1.twinx()
+        ax2.set_ylabel('Shapelet Feature Density')
         for idx_shapelet, shapelet in enumerate(self.shapelet_clf.shapelets_):
             t0 = locations[test_series_id, idx_shapelet]
-            plt.plot(numpy.arange(t0, t0 + len(shapelet)), shapelet, linewidth=2)
-        plt.tight_layout()
+            
+            ax2.plot(numpy.arange(t0, t0 + len(shapelet)), shapelet, linewidth=2)
+        fig.tight_layout()
         plt.show()
 
 class Knn():
