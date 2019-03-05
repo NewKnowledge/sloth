@@ -3,6 +3,7 @@ import pandas as pd
 from keras.optimizers import Adagrad, Adam
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score
+from sklearn.preprocessing import LabelEncoder
 
 from tslearn.datasets import CachedDatasets
 from tslearn.preprocessing import TimeSeriesScalerMinMax
@@ -32,6 +33,7 @@ class Shapelets():
         self.weight_regularizer = weight_regularizer
         self.shapelet_sizes = None
         self.shapelet_clf = None
+        self.encoder = LabelEncoder()
 
     def clear_session(self):
         try:
@@ -115,6 +117,32 @@ class Shapelets():
         '''
         X_test_scaled = self.__ScaleData(X_test)
         return self.shapelet_clf.predict_proba(X_test_scaled) 
+
+    def encode(categories):
+        '''
+            fit label encoder on input categories. returns transformed categories
+        '''
+        self.encoder.fit(categories)
+        return self.encoder.transform(categories)
+
+    def decode(y_probs, p_threshold):
+        '''
+            decode prediction probabilities y_probs into prediction / confidence give p_threshold
+        '''
+        prob_max = np.amax(y_probs, axis = 1)
+        prediction_indices = prob_max > p_threshold
+        y_pred = np.zeros(y_probs.shape[0])
+        y_pred[prediction_indices] = np.argmax(y_probs, axis = 1)[prediction_indices]
+        y_preds = self.encoder.inverse_transform(y_pred)
+
+        confidence = prob_max
+
+        # reintepret confidence in binary case
+        if y_probs.shape[1] == 1:
+            confidence = (prob_max - p_threshold) / (y_pred - p_threshold)
+        confidence = 0.5 + confidence / 2
+
+        return y_preds, confidence
 
     def VisualizeShapelets(self):
         '''
