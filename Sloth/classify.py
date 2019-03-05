@@ -118,14 +118,14 @@ class Shapelets():
         X_test_scaled = self.__ScaleData(X_test)
         return self.shapelet_clf.predict_proba(X_test_scaled) 
 
-    def encode(categories):
+    def encode(self, categories):
         '''
             fit label encoder on input categories. returns transformed categories
         '''
         self.encoder.fit(categories)
         return self.encoder.transform(categories)
 
-    def decode(y_probs, p_threshold):
+    def decode(self, y_probs, p_threshold):
         '''
             decode prediction probabilities y_probs into prediction / confidence give p_threshold
         '''
