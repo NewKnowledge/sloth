@@ -129,10 +129,10 @@ class Shapelets():
         '''
             decode prediction probabilities y_probs into prediction / confidence give p_threshold
         '''
-        prob_max = np.amax(y_probs, axis = 1)
+        prob_max = numpy.amax(y_probs, axis = 1)
         prediction_indices = prob_max > p_threshold
-        y_pred = np.zeros(y_probs.shape[0])
-        y_pred[prediction_indices] = np.argmax(y_probs, axis = 1)[prediction_indices]
+        y_pred = numpy.zeros(y_probs.shape[0])
+        y_pred[prediction_indices] = numpy.argmax(y_probs, axis = 1)[prediction_indices]
         y_preds = self.encoder.inverse_transform(y_pred)
 
         confidence = prob_max
