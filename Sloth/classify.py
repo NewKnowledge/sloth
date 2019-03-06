@@ -132,15 +132,17 @@ class Shapelets():
         prob_max = numpy.amax(y_probs, axis = 1)
         prediction_indices = prob_max > p_threshold
         y_pred = numpy.zeros(y_probs.shape[0])
-        y_pred[prediction_indices] = numpy.argmax(y_probs, axis = 1)[prediction_indices]
-        y_pred = y_pred.astype(int)
-        y_preds = self.encoder.inverse_transform(y_pred)
-        confidence = prob_max
-
+        
         # reintepret confidence in binary case
         if y_probs.shape[1] == 1:
+            y_pred[prediction_indices] = 1 
             confidence = (prob_max - p_threshold) / (y_pred - p_threshold)
-        confidence = 0.5 + confidence / 2
+            confidence = 0.5 + confidence / 2
+        else:
+            y_pred[prediction_indices] = numpy.argmax(y_probs, axis = 1)[prediction_indices]
+            confidence = prob_max
+        y_pred = y_pred.astype(int)
+        y_preds = self.encoder.inverse_transform(y_pred)
 
         return y_pred, y_preds, confidence
     
