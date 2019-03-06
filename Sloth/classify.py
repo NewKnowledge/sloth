@@ -133,8 +133,8 @@ class Shapelets():
         prediction_indices = prob_max > p_threshold
         y_pred = numpy.zeros(y_probs.shape[0])
         y_pred[prediction_indices] = numpy.argmax(y_probs, axis = 1)[prediction_indices]
+        y_pred = y_pred.astype(int)
         y_preds = self.encoder.inverse_transform(y_pred)
-
         confidence = prob_max
 
         # reintepret confidence in binary case
@@ -142,7 +142,17 @@ class Shapelets():
             confidence = (prob_max - p_threshold) / (y_pred - p_threshold)
         confidence = 0.5 + confidence / 2
 
-        return y_preds, confidence
+        return y_pred, y_preds, confidence
+    
+    def get_classes(self):
+        '''
+            get original classes from encoder
+        '''
+        try:
+            assert(self.encoder is not None)
+        except:
+            raise ValueError("Encoder has not been initialized")
+        return self.encoder.classes_
 
     def VisualizeShapelets(self):
         '''
