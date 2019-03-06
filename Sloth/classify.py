@@ -59,6 +59,29 @@ class Shapelets():
                             max_iter=self.epochs)
         return self.shapelet_clf.generate_model(series_length, nclasses)
 
+    def fit_transfer_model(self, X_train, y_train, checkpoint, nclasses_prior = 2, source_dir = None, val_data = None):        
+        # encode training and validation labels
+        y_train = self.encode(y_train)
+        y_val = self.encode(val_data[1])
+
+        # scale training and validation data to between 0 and 1
+        X_train_scaled = self.__ScaleData(X_train)
+        X_val_scaled = self.__ScaleData(val_data[0])
+
+        if self.shapelet_clf is None:
+            base_size = int(self.length * X_train.shape[1])
+            self.shapelet_sizes = {}
+            for sz_idx in range(self.num_shapelet_lengths):
+                shp_sz = base_size * (sz_idx + 1)
+                self.shapelet_sizes[shp_sz] = int(self.num_shapelets * X_train.shape[1])
+            self.shapelet_clf = ShapeletModel(n_shapelets_per_size=self.shapelet_sizes,
+                                optimizer=Adam(lr = self.learning_rate),
+                                weight_regularizer=self.weight_regularizer,
+                                max_iter=self.epochs)
+
+        # fit shapelet classifier
+        self.shapelet_clf.fit_transfer_model(X_train_scaled, y_train, nclasses_prior, checkpoint, source_dir, (X_val_scaled, y_val))
+
     def fit(self, X_train, y_train, source_dir = None, val_data = None):
         '''
             fit shapelet classifier on training data
