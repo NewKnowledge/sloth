@@ -59,7 +59,7 @@ class Shapelets():
                             max_iter=self.epochs)
         return self.shapelet_clf.generate_model(series_length, nclasses)
 
-    def fit(self, X_train, y_train, source_dir = None, val_split = 0.3):
+    def fit(self, X_train, y_train, source_dir = None, val_data = None):
         '''
             fit shapelet classifier on training data
 
@@ -82,7 +82,7 @@ class Shapelets():
         X_train_scaled = self.__ScaleData(X_train)
 
         # fit classifier
-        self.shapelet_clf.fit(X_train_scaled, y_train, source_dir, val_split)
+        self.shapelet_clf.fit(X_train_scaled, y_train, source_dir, val_data)
 
     def __ScaleData(self, input_data):
         ''' 
