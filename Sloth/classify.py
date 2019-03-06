@@ -78,11 +78,16 @@ class Shapelets():
                                 weight_regularizer=self.weight_regularizer,
                                 max_iter=self.epochs)
         
-        # scale training data to between 0 and 1
+        # encode training and validation labels
+        y_train = self.encode(y_train)
+        y_val = self.encode(val_data[1])
+
+        # scale training and validation data to between 0 and 1
         X_train_scaled = self.__ScaleData(X_train)
+        X_val_scaled = self.__ScaleData(val_data[0])
 
         # fit classifier
-        self.shapelet_clf.fit(X_train_scaled, y_train, source_dir, val_data)
+        self.shapelet_clf.fit(X_train_scaled, y_train, source_dir, (X_val_scaled, y_val))
 
     def __ScaleData(self, input_data):
         ''' 
@@ -144,7 +149,7 @@ class Shapelets():
         y_pred = y_pred.astype(int)
         y_preds = self.encoder.inverse_transform(y_pred)
 
-        return y_pred, y_preds, confidence
+        return y_preds, confidence
     
     def get_classes(self):
         '''
