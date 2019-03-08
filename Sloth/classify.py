@@ -43,9 +43,9 @@ class Shapelets():
         self.shapelet_clf.clear_session()
         return
 
-    def generate_model(self, series_length, nclasses):
+    def load_model(self, series_length, labels, checkpoint):
         '''
-            Generate structure of model used for Shapelet classifier
+            Load model from checkpoint into Shapelet classifier
         '''
         if self.shapelet_clf is None:
             base_size = int(self.length * series_length)
@@ -57,7 +57,13 @@ class Shapelets():
                             optimizer=Adam(lr = self.learning_rate),
                             weight_regularizer=self.weight_regularizer,
                             max_iter=self.epochs)
-        return self.shapelet_clf.generate_model(series_length, nclasses)
+        
+        # first generate new model into which to load the weights
+        self.encode(labels)
+        self.shapelet_clf.generate_model(series_length, len(self.get_classes()))
+
+        # load weights
+        self.shapelet_clf.model.load_weights(checkpoint)
 
     def fit_transfer_model(self, X_train, y_train, checkpoint, nclasses_prior = 2, source_dir = None, val_data = None):        
         # encode training and validation labels
