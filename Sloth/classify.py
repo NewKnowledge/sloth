@@ -1,7 +1,9 @@
-import numpy
+import numpy as np
 import pandas as pd
+import pickle
 from keras.optimizers import Adagrad, Adam
 import matplotlib.pyplot as plt
+import seaborn as sb
 from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import LabelEncoder
 
@@ -105,7 +107,7 @@ class Shapelets():
             self.shapelet_clf = ShapeletModel(n_shapelets_per_size=self.shapelet_sizes,
                                 optimizer=Adam(lr = self.learning_rate),
                                 weight_regularizer=self.weight_regularizer,
-                                max_iter=self.epochs)
+                                max_iter=self.epochs, verbose_level = 0)
         
         # encode training and validation labels
         y_train = self.encode(y_train)
@@ -163,9 +165,9 @@ class Shapelets():
         '''
             decode prediction probabilities y_probs into prediction / confidence give p_threshold
         '''
-        prob_max = numpy.amax(y_probs, axis = 1)
+        prob_max = np.amax(y_probs, axis = 1)
         prediction_indices = prob_max > p_threshold
-        y_pred = numpy.zeros(y_probs.shape[0])
+        y_pred = np.zeros(y_probs.shape[0])
         
         # reintepret confidence in binary case
         if y_probs.shape[1] == 1:
@@ -173,7 +175,7 @@ class Shapelets():
             confidence = (prob_max - p_threshold) / (y_pred - p_threshold)
             confidence = 0.5 + confidence / 2
         else:
-            y_pred[prediction_indices] = numpy.argmax(y_probs, axis = 1)[prediction_indices]
+            y_pred[prediction_indices] = np.argmax(y_probs, axis = 1)[prediction_indices]
             confidence = prob_max
         y_pred = y_pred.astype(int)
         y_preds = self.encoder.inverse_transform(y_pred)
@@ -205,37 +207,78 @@ class Shapelets():
         plt.tight_layout()
         plt.show() 
 
-    def VisualizeShapeletLocations(self, X_test, test_series_id, series_size, num_bins, density):
+    def VisualizeShapeletLocations(self, series_values, series_id, save_dir = 'visualizations', 
+        name = 'shp_1'):
         '''
             visualize shapelets superimposed on one of the test series
 
             parameters:
-                X_test:             test data set
-                test_series_id:     id of test time series to visualize  
-                axis:               axis to duplicate to plot shapelets / ts on different y axes  
+                series_values:      raw values on which to visualize shapelets
+                series_id:          id of time series to visualize  
+                save_dir            directory in which to save visualizations
+                name                name under which to save viz (bc unique every time)
+                n_shapelets:        
         '''
-        X_test_scaled = self.__ScaleData(X_test)
-        locations = self.shapelet_clf.locate(X_test_scaled)
-        time_unit = series_size / num_bins / 60
-        fig, ax1 = plt.subplots()
-        if time_unit == 1:
-            ax1.set_xlabel('Minute of the Hour')
-        elif time_unit == 0.5:
-            ax1.set_xlabel('Half Minute of the Hour')
-        if density:
-            ax1.set_ylabel('Email Density')
-        else:
-            ax1.set_ylabel('Emails per Second')
-        plt.title("Locations of shapelet matches (%d shapelets extracted) in test series %d" % (sum(self.shapelet_sizes.values()), test_series_id))
-        ax1.plot(X_test[test_series_id].ravel(), linewidth=1)
-        ax2 = ax1.twinx()
-        ax2.set_ylabel('Shapelet Feature Density')
-        for idx_shapelet, shapelet in enumerate(self.shapelet_clf.shapelets_):
-            t0 = locations[test_series_id, idx_shapelet]
-            
-            ax2.plot(numpy.arange(t0, t0 + len(shapelet)), shapelet, linewidth=2)
-        fig.tight_layout()
-        plt.show()
+
+        plt.style.use("seaborn-whitegrid")
+
+        # NK brand colors
+        COLORS = ["#FA5655", "#F79690", "#B9BC2D", "#86B6B2", "#955B99", "#252B7A"]
+        # others? "#8D6B2C",
+                # "#D0A826",
+                # "#FEDB03",
+                # "#000000",
+                # "#454545",
+                # "#FFFFFF",
+                # "#F8F6F1"]
+        n_rows, n_cols, _ = series_values.shape
+        test_series = series_values[series_id].reshape(-1,)
+
+        closest_inds = self.shapelet_clf.locate(test_series.reshape(1,-1,1))[0]
+        closest_dists = []
+        for ind , shp in zip(closest_inds, self.shapelet_clf.shapelets_):
+            closest_dists.append(np.linalg.norm(test_series[ind : ind + shp.shape[0]] - shp))
+        closest_dists = np.array(closest_dists)
+
+        # convert distance to weight where dist=0 -> wt=1 and dist=inf -> wt=0
+        sl_weights = 1 / (1 + closest_dists)
+        # plot the signal with matching shapelets color overlayed
+        plt.clf()
+        plt.plot(range(n_cols), test_series, color="k")
+        for ind, sl, wt, color in zip(closest_inds, self.shapelet_clf.shapelets_, sl_weights, COLORS):
+            # find closest match
+            t = range(ind, ind + sl.shape[0])
+            match = test_series[ind : ind + sl.shape[0]]
+            # plot shapelet on top of signal width width and alpha set by shapelet weight
+            plt.plot(t, match, alpha=7 * wt, linewidth=35 * wt, color=color)
+        plt.ylabel('Email Density')
+        plt.xlabel('Minute of the Hour')
+        plt.savefig(save_dir + "/{}_signal_size_{}_id_{}.png".format(name, n_cols, series_id))
+
+        # plot shapelets
+        plt.clf()
+        # to plot the shapelets, switch to dark background
+        plt.style.use("seaborn-darkgrid")
+        # ax = plt.axes()  # used below for sharex, sharey (if needed?)
+
+        # arange shapletes in grid - find greatest factor of n_shapelets
+        gf = 0
+        shp_t = self.shapelet_clf.shapelets_as_time_series_
+        shp = self.shapelet_clf.shapelets_
+        for i in range(1,shp.shape[0]):
+            if shp.shape[0]%i==0:
+                gf = i
+        of = int(shp.shape[0] / gf)
+        n_cols = 2
+        for i in range(shp_t.shape[0]):
+            ax_i = plt.subplot(gf, of, i + 1)
+            # we could force them to share the same axes
+            # ax_i = plt.subplot(n_rows, n_cols, i + 1, sharex=ax, sharey=ax)
+            #ax_i.set_xticklabels([])
+            ax_i.set_yticklabels([])
+            plt.plot(range(shp_t.shape[1]), shp[i].reshape(-1), color=COLORS[i%len(COLORS)], linewidth=3)
+            plt.xlabel('Shapelet Length')
+        plt.savefig(save_dir + "/{}_shapelets_size_{}_id_{}.png".format(name, n_cols, series_id))
 
 class Knn():
     def __init__(self, n_neighbors):
