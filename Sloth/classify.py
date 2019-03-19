@@ -120,7 +120,7 @@ class Shapelets():
         X_val_scaled = self.__ScaleData(val_data[0])
 
         # fit classifier
-        self.shapelet_clf.fit(X_train_scaled, y_train, source_dir, (X_val_scaled, y_val))
+        return self.shapelet_clf.fit(X_train_scaled, y_train, source_dir, (X_val_scaled, y_val))
 
     def __ScaleData(self, input_data):
         ''' 
