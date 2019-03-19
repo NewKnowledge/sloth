@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import pickle
-from keras.optimizers import Adagrad, Adam
+from keras.optimizers import Adam, Adagrad, RMSprop
 import matplotlib.pyplot as plt
 import seaborn as sb
 from sklearn.metrics import accuracy_score
@@ -14,7 +14,8 @@ from tslearn.utils import ts_size
 from tslearn.neighbors import KNeighborsTimeSeriesClassifier
 
 class Shapelets():
-    def __init__(self, epochs, length, num_shapelet_lengths, num_shapelets, learning_rate, weight_regularizer):
+    def __init__(self, epochs, length, num_shapelet_lengths, num_shapelets, learning_rate, weight_regularizer, 
+        batch_size = 256, optimizer = Adam):
         '''
             initialize shapelet hyperparameters
 
@@ -31,8 +32,9 @@ class Shapelets():
         self.length = length
         self.num_shapelet_lengths = num_shapelet_lengths
         self.num_shapelets = num_shapelets
-        self.learning_rate = learning_rate
         self.weight_regularizer = weight_regularizer
+        self.batch_size = batch_size
+        self.optimizer = optimizer(lr = learning_rate)
         self.shapelet_sizes = None
         self.shapelet_clf = None
         self.encoder = LabelEncoder()
@@ -56,9 +58,9 @@ class Shapelets():
                 shp_sz = base_size * (sz_idx + 1)
                 self.shapelet_sizes[shp_sz] = int(self.num_shapelets * series_length)
             self.shapelet_clf = ShapeletModel(n_shapelets_per_size=self.shapelet_sizes,
-                            optimizer=Adam(lr = self.learning_rate),
+                            optimizer=self.optimizer,
                             weight_regularizer=self.weight_regularizer,
-                            max_iter=self.epochs)
+                            max_iter=self.epochs, batch_size=self.batch_size)
         
         # first generate new model into which to load the weights
         self.encode(labels)
@@ -83,9 +85,9 @@ class Shapelets():
                 shp_sz = base_size * (sz_idx + 1)
                 self.shapelet_sizes[shp_sz] = int(self.num_shapelets * X_train.shape[1])
             self.shapelet_clf = ShapeletModel(n_shapelets_per_size=self.shapelet_sizes,
-                                optimizer=Adam(lr = self.learning_rate),
+                                optimizer=self.optimizer,
                                 weight_regularizer=self.weight_regularizer,
-                                max_iter=self.epochs)
+                                max_iter=self.epochs, batch_size=self.batch_size)
 
         # fit shapelet classifier
         self.shapelet_clf.fit_transfer_model(X_train_scaled, y_train, nclasses_prior, checkpoint, source_dir, (X_val_scaled, y_val))
@@ -105,9 +107,9 @@ class Shapelets():
                 shp_sz = base_size * (sz_idx + 1)
                 self.shapelet_sizes[shp_sz] = int(self.num_shapelets * X_train.shape[1])
             self.shapelet_clf = ShapeletModel(n_shapelets_per_size=self.shapelet_sizes,
-                                optimizer=Adam(lr = self.learning_rate),
+                                optimizer=self.optimizer,
                                 weight_regularizer=self.weight_regularizer,
-                                max_iter=self.epochs, verbose_level = 0)
+                                max_iter=self.epochs, batch_size=self.batch_size)
         
         # encode training and validation labels
         y_train = self.encode(y_train)
@@ -253,7 +255,8 @@ class Shapelets():
             plt.plot(t, match, alpha=7 * wt, linewidth=35 * wt, color=color)
         plt.ylabel('Email Density')
         plt.xlabel('Minute of the Hour')
-        plt.savefig(save_dir + "/{}_signal_size_{}_id_{}.png".format(name, n_cols, series_id))
+        plt.show()
+        #plt.savefig(save_dir + "/{}_signal_size_{}_id_{}.png".format(name, n_cols, series_id))
 
         # plot shapelets
         plt.clf()
@@ -278,7 +281,8 @@ class Shapelets():
             ax_i.set_yticklabels([])
             plt.plot(range(shp_t.shape[1]), shp[i].reshape(-1), color=COLORS[i%len(COLORS)], linewidth=3)
             plt.xlabel('Shapelet Length')
-        plt.savefig(save_dir + "/{}_shapelets_size_{}_id_{}.png".format(name, n_cols, series_id))
+        plt.show()
+        #plt.savefig(save_dir + "/{}_shapelets_size_{}_id_{}.png".format(name, n_cols, series_id))
 
 class Knn():
     def __init__(self, n_neighbors):
