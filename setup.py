@@ -16,7 +16,7 @@ setup(name='Sloth',
         'tslearn @ git+https://github.com/NewKnowledge/tslearn@6eb333fa1606d90fbdb37f975f3ffbe265b91198#egg=tslearn-0.1.28.3',
         'hdbscan>=0.8.18', 
         'Keras>=2.1.6',
-        'tensorflow',
+        'tensorflow-gpu <= 1.12.0',
         'seaborn'],
     include_package_data=True,
 )
