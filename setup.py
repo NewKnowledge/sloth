@@ -16,6 +16,6 @@ setup(name='Sloth',
         'tslearn>=0.1.21',
         'hdbscan>=0.8.18', 
         'Keras>=2.1.6',
-        'tensorflow>=1.8.0'],
+        'tensorflow-gpu<=1.12.0'],
     include_package_data=True,
 )
