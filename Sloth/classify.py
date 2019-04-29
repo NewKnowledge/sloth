@@ -120,7 +120,7 @@ class Knn():
                 n_neighbors           : number of neighbors on which to make classification decision
         '''
         self.n_neighbors = n_neighbors
-        self.knn_clf = KNeighborsTimeSeriesClassifier(n_neighbors=n_neighbors, metric="dtw")
+        self.knn_clf = KNeighborsTimeSeriesClassifier(n_neighbors=n_neighbors, metric="gak")
 
     def __ScaleData(self, input_data):
         ''' 
