@@ -11,7 +11,8 @@ from tslearn.utils import ts_size
 from tslearn.neighbors import KNeighborsTimeSeriesClassifier
 
 class Shapelets():
-    def __init__(self, epochs, length, num_shapelet_lengths, learning_rate, weight_regularizer):
+    def __init__(self, epochs, length, num_shapelet_lengths, num_shapelets, 
+    learning_rate, weight_regularizer):
         '''
             initialize shapelet hyperparameters
 
@@ -25,6 +26,7 @@ class Shapelets():
         self.epochs = epochs
         self.length = length
         self.num_shapelet_lengths = num_shapelet_lengths
+        self.num_shapelets = num_shapelets
         self.learning_rate = learning_rate
         self.weight_regularizer = weight_regularizer
         self.shapelet_sizes = None
@@ -38,11 +40,11 @@ class Shapelets():
                 X_train                : training time series
                 y_train                : training labels
         ''' 
-        self.shapelet_sizes = grabocka_params_to_shapelet_size_dict(n_ts = X_train.shape[0], 
-                    ts_sz = X_train.shape[1], 
-                    n_classes = len(set(y_train)), 
-                    l = self.length, 
-                    r = self.num_shapelet_lengths)
+        base_size = int(self.length * X_train.shape[1])
+        self.shapelet_sizes = {}
+        for sz_idx in range(self.num_shapelet_lengths):
+            shp_sz = base_size * (sz_idx + 1)
+            self.shapelet_sizes[shp_sz] = int(self.num_shapelets * X_train.shape[1])
         self.shapelet_clf = ShapeletModel(n_shapelets_per_size=self.shapelet_sizes,
                             optimizer=Adam(lr = self.learning_rate),
                             weight_regularizer=self.weight_regularizer,
