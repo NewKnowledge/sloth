@@ -99,7 +99,7 @@ class KMeans():
             self.km = TimeSeriesKMeans(n_clusters=self.n_clusters, n_init=20, verbose=True, random_state=self.random_seed)
         else:
             self.km = GlobalAlignmentKernelKMeans(n_clusters=self.n_clusters, sigma=sigma_gak(train), n_init=20, verbose=True, random_state=self.random_seed)
-        self.km.fit(train)
+        return self.km.fit_predict(train)
 
     def predict(self, test):
         '''
