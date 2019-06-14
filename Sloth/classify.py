@@ -11,9 +11,9 @@ from tslearn.utils import ts_size
 from tslearn.neighbors import KNeighborsTimeSeriesClassifier
 
 class Shapelets():
-    def __init__(self, epochs = epochs, length = length, num_shapelet_lengths = num_shapelet_lengths, 
-    num_shapelets = num_shapelets, learning_rate = learning_rate, weight_regularizer = weight_regularizer, 
-    random_state = random_state, batch_size = batch_size):
+    def __init__(self, epochs = 10000, length = 0.1, num_shapelet_lengths = 2, 
+    num_shapelets = 0.15, learning_rate = .01, weight_regularizer = .01, 
+    random_state = 0, batch_size = 256):
         '''
             initialize shapelet hyperparameters
 
