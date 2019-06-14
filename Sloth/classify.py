@@ -12,7 +12,7 @@ from tslearn.neighbors import KNeighborsTimeSeriesClassifier
 
 class Shapelets():
     def __init__(self, epochs, length, num_shapelet_lengths, num_shapelets, 
-    learning_rate, weight_regularizer):
+    learning_rate, weight_regularizer, random_state):
         '''
             initialize shapelet hyperparameters
 
@@ -29,6 +29,7 @@ class Shapelets():
         self.num_shapelets = num_shapelets
         self.learning_rate = learning_rate
         self.weight_regularizer = weight_regularizer
+        self.random_state = random_state
         self.shapelet_sizes = None
         self.shapelet_clf = None
 
@@ -48,7 +49,7 @@ class Shapelets():
         self.shapelet_clf = ShapeletModel(n_shapelets_per_size=self.shapelet_sizes,
                             optimizer=Adam(lr = self.learning_rate),
                             weight_regularizer=self.weight_regularizer,
-                            max_iter=self.epochs,
+                            max_iter=self.epochs, random_state = self.random_state,
                             verbose_level=0)
         
         # scale training data to between 0 and 1
