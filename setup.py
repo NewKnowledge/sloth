@@ -14,7 +14,7 @@ setup(name='Sloth',
         'pyramid-arima>=0.6.5',
         'cython>=0.28.5',
         'tslearn>=0.1.21',
-        'hdbscan==0.8.18', 
+        'hdbscan==0.8.23', 
         'tensorflow-gpu==2.0.0'],
     include_package_data=True,
 )
