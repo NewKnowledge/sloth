@@ -1,6 +1,6 @@
 import numpy
 import pandas as pd
-from keras.optimizers import Adagrad, Adam
+from tensorflow.keras.optimizers import Adagrad, Adam
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score
 

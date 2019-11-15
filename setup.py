@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(name='Sloth',
-    version='2.0.7',
+    version='2.0.8',
     description='Time series tools for classification, forecasting and clustering',
     packages=['Sloth'],
     install_requires=['scikit-learn >= 0.18.1',
@@ -15,7 +15,6 @@ setup(name='Sloth',
         'cython>=0.28.5',
         'tslearn>=0.1.21',
         'hdbscan==0.8.18', 
-        'Keras>=2.1.6',
-        'tensorflow-gpu<=1.12.2'],
+        'tensorflow-gpu==2.0.0'],
     include_package_data=True,
 )
