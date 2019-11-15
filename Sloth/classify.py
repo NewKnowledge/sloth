@@ -119,23 +119,14 @@ class Shapelets():
 class Knn():
     def __init__(self, n_neighbors):
         '''
-            initialize KNN class with dynamic time warping distance metric
+            initialize KNN class with euclidean distance metric
 
             hyperparameters:
                 n_neighbors           : number of neighbors on which to make classification decision
         '''
         self.n_neighbors = n_neighbors
         self.knn_clf = KNeighborsTimeSeriesClassifier(n_neighbors=n_neighbors, metric="euclidean")
-
-    def __ScaleData(self, input_data):
-        ''' 
-            scale input data to range [0,1]
-
-            parameters:
-                input_data        : input data to rescale
-        '''
-
-        return TimeSeriesScalerMinMax().fit_transform(input_data)
+        self.scaler = TimeSeriesScalerMinMax()
 
     def fit(self, X_train, y_train):
         '''
@@ -146,7 +137,7 @@ class Knn():
                 y_train                : training labels
         ''' 
         # scale training data to between 0 and 1
-        X_train_scaled = self.__ScaleData(X_train)
+        X_train_scaled = self.scaler.fit_transform(X_train)
         self.knn_clf.fit(X_train_scaled, y_train)
     
     def predict(self, X_test):
@@ -159,7 +150,7 @@ class Knn():
             returns: classifications for test data set
         '''
         # scale test data to between 0 and 1
-        X_test_scaled = self.__ScaleData(X_test)
+        X_test_scaled = self.scaler.transform(X_test)
         return self.knn_clf.predict(X_test_scaled) 
 
 #   test using Trace dataset (Bagnall, Lines, Vickers, Keogh, The UEA & UCR Time Series
