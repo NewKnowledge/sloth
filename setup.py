@@ -14,7 +14,7 @@ setup(name='Sloth',
         'pyramid-arima>=0.6.5',
         'cython>=0.28.5',
         'tslearn>=0.1.21',
-        'hdbscan==0.8.23', 
+        'hdbscan @ git+https://github.com/scikit-learn-contrib/hdbscan@6c1a6d4a214d547243358ac7b4d0ec4651277fe1#egg=hdbscan', 
         'tensorflow-gpu==2.0.0'],
     include_package_data=True,
 )
